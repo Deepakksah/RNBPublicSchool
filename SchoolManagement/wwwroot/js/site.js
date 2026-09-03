@@ -108,76 +108,71 @@ function getRowSearchableText(row) {
 }
 
 // ----------------------------------------------------
-// Global Live Auto-Search & Lazy Loading
+// Global Live Auto-Search & Instant Filtering
 // ----------------------------------------------------
 function initGlobalAutoSearch() {
     // Find all search inputs across all pages
-    const searchInputs = document.querySelectorAll('input[name="search"], input[name="q"], input[name="searchTerm"], input[type="search"], input[id*="Search"], input[id*="search"], input[placeholder*="Search"], input[placeholder*="search"]');
+    const searchInputs = document.querySelectorAll('input[type="search"], input[name*="search" i], input[id*="search" i], input[placeholder*="search" i]');
 
     searchInputs.forEach(input => {
         let debounceTimer;
 
         input.addEventListener('input', function (e) {
-            clearTimeout(debounceTimer);
             const query = e.target.value.trim().toLowerCase();
 
-            debounceTimer = setTimeout(() => {
-                // Find table in the same card or page
-                const card = input.closest('.card') || document.querySelector('.card');
-                const table = card ? card.querySelector('table') : document.querySelector('table');
+            // 1. Instant (0ms) in-memory table row filtering
+            const card = input.closest('.card') || document.querySelector('.card');
+            const table = card ? card.querySelector('table') : document.querySelector('table');
 
-                // If table has client-side rows, filter instantly
-                if (table && table.querySelectorAll('tbody tr').length > 0) {
-                    const rows = table.querySelectorAll('tbody tr:not(.no-filter):not(.auto-search-empty-row)');
-                    let matchCount = 0;
+            if (table && table.querySelectorAll('tbody tr').length > 0) {
+                const rows = table.querySelectorAll('tbody tr:not(.no-filter):not(.auto-search-empty-row)');
+                let matchCount = 0;
 
-                    rows.forEach(row => {
-                        const rowSearchText = getRowSearchableText(row);
-                        if (query === '' || rowSearchText.includes(query)) {
-                            row.style.display = '';
-                            matchCount++;
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-
-                    // Manage "No matching records" placeholder
-                    let emptyRow = table.querySelector('.auto-search-empty-row');
-                    if (matchCount === 0 && query !== '') {
-                        if (!emptyRow) {
-                            const colCount = table.querySelectorAll('thead th').length || 6;
-                            const tr = document.createElement('tr');
-                            tr.className = 'auto-search-empty-row';
-                            tr.innerHTML = `<td colspan="${colCount}" class="text-center py-4 text-muted small"><i class="bi bi-search me-1"></i> No records matching "<strong>${query}</strong>"</td>`;
-                            table.querySelector('tbody').appendChild(tr);
-                        } else {
-                            emptyRow.style.display = '';
-                            emptyRow.querySelector('strong').innerText = query;
-                        }
-                    } else if (emptyRow) {
-                        emptyRow.style.display = 'none';
+                rows.forEach(row => {
+                    const rowSearchText = getRowSearchableText(row);
+                    if (query === '' || rowSearchText.indexOf(query) !== -1) {
+                        row.style.display = '';
+                        matchCount++;
+                    } else {
+                        row.style.display = 'none';
                     }
-                }
-            }, 100);
-        });
-    });
-}
+                });
 
-                // If server-side form exists, perform smooth AJAX fetch in background
-                if (form && form.method.toLowerCase() === 'get') {
+                // Manage "No matching records" placeholder
+                let emptyRow = table.querySelector('.auto-search-empty-row');
+                if (matchCount === 0 && query !== '') {
+                    if (!emptyRow) {
+                        const colCount = table.querySelectorAll('thead th').length || 6;
+                        const tr = document.createElement('tr');
+                        tr.className = 'auto-search-empty-row';
+                        tr.innerHTML = `<td colspan="${colCount}" class="text-center py-4 text-muted small"><i class="bi bi-search me-1"></i> No records matching "<strong>${query}</strong>"</td>`;
+                        table.querySelector('tbody').appendChild(tr);
+                    } else {
+                        emptyRow.style.display = '';
+                        emptyRow.querySelector('strong').innerText = query;
+                    }
+                } else if (emptyRow) {
+                    emptyRow.style.display = 'none';
+                }
+            }
+
+            // 2. Debounced Background AJAX Sync if server form exists
+            clearTimeout(debounceTimer);
+            const form = input.closest('form');
+            if (form && form.method.toLowerCase() === 'get') {
+                debounceTimer = setTimeout(() => {
                     const url = new URL(form.action || window.location.href, window.location.origin);
                     const formData = new FormData(form);
                     for (const [k, v] of formData.entries()) {
                         url.searchParams.set(k, v);
                     }
 
-                    // Update URL without full reload
+                    // Update browser URL silently
                     window.history.replaceState({}, '', url.toString());
 
-                    // Lazy load content with opacity transition
+                    // If table exists, update seamlessly
                     const tableContainer = card ? card.querySelector('.table-responsive') : document.querySelector('.table-responsive');
                     if (tableContainer) {
-                        tableContainer.style.opacity = '0.5';
                         fetch(url.toString(), { credentials: 'same-origin' })
                             .then(res => res.text())
                             .then(html => {
@@ -187,17 +182,14 @@ function initGlobalAutoSearch() {
                                 if (newTable && tableContainer) {
                                     tableContainer.innerHTML = newTable.innerHTML;
                                 }
-                                tableContainer.style.opacity = '1';
                             })
-                            .catch(() => {
-                                tableContainer.style.opacity = '1';
-                            });
+                            .catch(() => {});
                     }
-                }
-            }, 200);
+                }, 350);
+            }
         });
 
-        // Prevent default enter reload on GET search forms if handled by live search
+        // Prevent unwanted full page reload on pressing Enter
         const form = input.closest('form');
         if (form && form.method.toLowerCase() === 'get') {
             form.addEventListener('submit', function (e) {
@@ -205,6 +197,17 @@ function initGlobalAutoSearch() {
                 input.dispatchEvent(new Event('input'));
             });
         }
+    });
+
+    // Also auto-filter on dropdown changes (Class, Section, Status)
+    const filterSelects = document.querySelectorAll('select[id*="filter" i], select[name*="class" i], select[name*="section" i], select[name*="status" i]');
+    filterSelects.forEach(sel => {
+        sel.addEventListener('change', function () {
+            const form = sel.closest('form');
+            if (form && form.method.toLowerCase() === 'get') {
+                form.submit();
+            }
+        });
     });
 }
 
