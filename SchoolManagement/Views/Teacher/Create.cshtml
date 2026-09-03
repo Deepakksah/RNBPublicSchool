@@ -86,12 +86,32 @@
                 </div>
                 <div class="card-body p-2.5">
                     <div class="row g-2">
-                        <div class="col-md-4">
-                            <label asp-for="Designation" class="form-label small fw-semibold text-muted">Designation *</label>
-                            <input asp-for="Designation" class="form-control form-control-sm fw-bold text-dark" id="teacherDesigInput" placeholder="e.g. Senior Teacher" required />
+                        <div class="col-md-5">
+                            <label asp-for="Designation" class="form-label small fw-semibold text-muted">Designation / Post *</label>
+                            <select asp-for="Designation" class="form-select form-select-sm fw-bold text-dark" id="teacherDesigSelect" required>
+                                <option value="Principal">👑 Principal</option>
+                                <option value="Vice Principal">⭐ Vice Principal</option>
+                                <option value="Head of Department (HOD)">🏆 Head of Department (HOD)</option>
+                                <option value="PGT Teacher (Class 11-12)">🎓 PGT Teacher (Class 11-12)</option>
+                                <option value="TGT Teacher (Class 6-10)">📚 TGT Teacher (Class 6-10)</option>
+                                <option value="PRT Teacher (Class 1-5)">✏️ PRT Teacher (Class 1-5)</option>
+                                <option value="NTT / Nursery Teacher">🧸 NTT / Nursery Teacher</option>
+                                <option value="Senior Teacher" selected>🎖️ Senior Teacher</option>
+                                <option value="Assistant Teacher">🧑‍🏫 Assistant Teacher</option>
+                                <option value="Computer / IT Faculty">💻 Computer / IT Faculty</option>
+                                <option value="Physical Education Teacher (PET)">⚽ Physical Education (PET) / Sports Coach</option>
+                                <option value="Science & Lab Instructor">🔬 Science & Lab Instructor</option>
+                                <option value="Music & Art Teacher">🎨 Music, Dance & Art Teacher</option>
+                                <option value="Librarian">📖 Librarian</option>
+                                <option value="Accountant">💰 Accountant / Fee In-Charge</option>
+                                <option value="Data Entry Operator / Clerk">📋 Data Entry Operator / Clerk</option>
+                                <option value="Administrative Officer">🏢 Administrative Officer</option>
+                                <option value="Other">➕ Other / Custom Designation...</option>
+                            </select>
+                            <input type="text" id="customDesigInput" class="form-control form-control-sm mt-1" placeholder="Type custom designation..." style="display: none;" />
                             <span asp-validation-for="Designation" class="text-danger small"></span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label asp-for="Subject" class="form-label small fw-semibold text-muted">Primary Subject *</label>
                             <input asp-for="Subject" class="form-control form-control-sm fw-semibold text-primary" id="teacherSubjInput" placeholder="e.g. Science" required />
                         </div>
@@ -230,10 +250,18 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         $(document).ready(function () {
+            function getSelectedDesig() {
+                var val = $('#teacherDesigSelect').val();
+                if (val === 'Other') {
+                    return $('#customDesigInput').val().trim() || 'Custom';
+                }
+                return val;
+            }
+
             function updateCard() {
                 var name = $('#teacherNameInput').val().trim();
                 var emp = $('#teacherEmpInput').val().trim();
-                var desig = $('#teacherDesigInput').val().trim();
+                var desig = getSelectedDesig();
                 var subj = $('#teacherSubjInput').val().trim();
                 var qual = $('#teacherQualInput').val().trim();
                 var mobile = $('#teacherMobileInput').val().trim();
@@ -248,7 +276,29 @@
                 $('#cardTeacherClass').text(secText.includes('None') ? 'None' : secText);
             }
 
-            $('#teacherNameInput, #teacherEmpInput, #teacherDesigInput, #teacherSubjInput, #teacherQualInput, #teacherMobileInput').on('input', updateCard);
+            $('#teacherDesigSelect').on('change', function () {
+                if ($(this).val() === 'Other') {
+                    $('#customDesigInput').show().focus();
+                } else {
+                    $('#customDesigInput').hide();
+                }
+                updateCard();
+            });
+
+            $('#customDesigInput').on('input', function () {
+                updateCard();
+            });
+
+            $('#teacherCreateForm').on('submit', function () {
+                if ($('#teacherDesigSelect').val() === 'Other') {
+                    var customVal = $('#customDesigInput').val().trim();
+                    if (customVal) {
+                        $('#teacherDesigSelect').append($('<option>', { value: customVal, text: customVal, selected: true }));
+                    }
+                }
+            });
+
+            $('#teacherNameInput, #teacherEmpInput, #teacherSubjInput, #teacherQualInput, #teacherMobileInput').on('input', updateCard);
             $('#teacherSecSelect').on('change', updateCard);
 
             $('#teacherPhotoInput').on('change', function (e) {
