@@ -3,14 +3,20 @@
     ViewData["Title"] = "New Student Admission — DEO Desk";
 }
 
-<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-3 border-bottom">
+<!-- Top Header with Status Indicators -->
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-1.5 mb-2 border-bottom">
     <div>
         <div class="d-flex align-items-center gap-2">
-            <a asp-action="Index" class="btn btn-sm btn-light border text-muted"><i class="bi bi-arrow-left"></i></a>
-            <h4 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">New Student Admission Data Entry</h4>
-            <span class="badge bg-success-subtle text-success">Session 2026-27</span>
+            <a asp-action="Index" class="btn btn-sm btn-light border text-muted py-0.5 px-2"><i class="bi bi-arrow-left"></i></a>
+            <h5 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">New Student Admission & Fast Enrollment Desk</h5>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle py-0.5 px-2" style="font-size: 0.72rem;">Session 2026-27</span>
         </div>
-        <p class="text-muted small mb-0 ms-md-4 ps-md-2">Fill all student, parent, and classroom parameters. Data syncs instantly across all school databases.</p>
+        <div class="text-muted small" style="font-size: 0.74rem;">Fill student bio, parent contact, and assign classroom. Generates official admission number and syncs to database.</div>
+    </div>
+    <div class="d-flex gap-1.5 mt-2 mt-md-0">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm py-1 px-2.5 d-flex align-items-center gap-1" style="font-size: 0.78rem;">
+            <i class="bi bi-people"></i> Admission Directory
+        </a>
     </div>
 </div>
 
@@ -20,198 +26,276 @@
 
     @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
     {
-        <div class="alert alert-danger py-2 px-3 small d-flex align-items-center gap-2 mb-3 rounded-2">
+        <div class="alert alert-danger py-2 px-3 small d-flex align-items-center gap-2 mb-2 rounded-2">
             <i class="bi bi-exclamation-circle-fill"></i>
             <div>@Html.ValidationSummary(true, "", new { @class = "text-danger mb-0" })</div>
         </div>
     }
 
-    <div class="row g-3 mb-4">
-        <!-- 1. ACADEMIC & CLASSROOM ASSIGNMENT -->
-        <div class="col-12">
-            <div class="card card-custom p-3 border-start border-4 border-primary">
-                <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-journal-bookmark-fill"></i>
-                    <span>1. Academic Enrollment & Classroom</span>
-                </h6>
-                <div class="row g-2">
-                    <div class="col-md-3">
-                        <label asp-for="AcademicYearId" class="form-label small fw-semibold text-muted"></label>
-                        <select asp-for="AcademicYearId" asp-items="Model.AcademicYears" class="form-select form-select-sm" required></select>
-                        <span asp-validation-for="AcademicYearId" class="text-danger small"></span>
-                    </div>
-                    <div class="col-md-3">
-                        <label asp-for="ClassId" class="form-label small fw-semibold text-muted"></label>
-                        <select asp-for="ClassId" asp-items="Model.Classes" class="form-select form-select-sm" id="classSelect" required></select>
-                        <span asp-validation-for="ClassId" class="text-danger small"></span>
-                    </div>
-                    <div class="col-md-2">
-                        <label asp-for="SectionId" class="form-label small fw-semibold text-muted"></label>
-                        <select asp-for="SectionId" asp-items="Model.Sections" class="form-select form-select-sm" id="sectionSelect" required></select>
-                        <span asp-validation-for="SectionId" class="text-danger small"></span>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label asp-for="AdmissionNumber" class="form-label small fw-semibold text-muted mb-0"></label>
-                            <span class="badge bg-primary-subtle text-primary" style="font-size: 0.65rem;">Auto</span>
+    <div class="row g-2 mb-3">
+        <!-- LEFT COLUMN: MAIN FORM DATA (70%) -->
+        <div class="col-lg-8">
+            <!-- 1. ACADEMIC ENROLLMENT & CLASSROOM -->
+            <div class="card card-custom mb-2">
+                <div class="card-header-custom py-1.5 px-3 bg-light d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-primary small">
+                        <i class="bi bi-mortarboard-fill me-1"></i> 1. Academic Enrollment & Classroom Allocation
+                    </span>
+                    <span class="badge bg-primary text-white" style="font-size: 0.68rem;">Step 1</span>
+                </div>
+                <div class="card-body p-2.5">
+                    <div class="row g-2">
+                        <div class="col-md-3">
+                            <label asp-for="AcademicYearId" class="form-label small fw-semibold text-muted">Academic Year</label>
+                            <select asp-for="AcademicYearId" asp-items="Model.AcademicYears" class="form-select form-select-sm" required></select>
+                            <span asp-validation-for="AcademicYearId" class="text-danger small"></span>
                         </div>
-                        <input asp-for="AdmissionNumber" class="form-control form-control-sm fw-bold text-primary" required />
-                        <span asp-validation-for="AdmissionNumber" class="text-danger small"></span>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label asp-for="RollNumber" class="form-label small fw-semibold text-muted mb-0"></label>
-                            <span class="badge bg-success-subtle text-success" id="rollBadge" style="font-size: 0.65rem;">Auto-Allocated</span>
+                        <div class="col-md-3">
+                            <label asp-for="ClassId" class="form-label small fw-semibold text-muted">Class / Standard *</label>
+                            <select asp-for="ClassId" asp-items="Model.Classes" class="form-select form-select-sm fw-semibold text-dark" id="classSelect" required></select>
+                            <span asp-validation-for="ClassId" class="text-danger small"></span>
                         </div>
-                        <input asp-for="RollNumber" class="form-control form-control-sm fw-bold" id="rollInput" type="number" min="1" max="200" required />
-                        <span asp-validation-for="RollNumber" class="text-danger small"></span>
+                        <div class="col-md-2">
+                            <label asp-for="SectionId" class="form-label small fw-semibold text-muted">Section *</label>
+                            <select asp-for="SectionId" asp-items="Model.Sections" class="form-select form-select-sm fw-bold text-primary" id="sectionSelect" required></select>
+                            <span asp-validation-for="SectionId" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="AdmissionNumber" class="form-label small fw-semibold text-muted">Adm. Number *</label>
+                            <input asp-for="AdmissionNumber" class="form-control form-control-sm fw-bold text-primary bg-light" id="previewAdmNo" required />
+                            <span asp-validation-for="AdmissionNumber" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="RollNumber" class="form-label small fw-semibold text-muted">Roll No. *</label>
+                            <input asp-for="RollNumber" class="form-control form-control-sm fw-bold text-success bg-light" id="rollInput" type="number" min="1" max="200" required />
+                            <span asp-validation-for="RollNumber" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. STUDENT BIO & IDENTITY -->
+            <div class="card card-custom mb-2">
+                <div class="card-header-custom py-1.5 px-3 bg-light d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-primary small">
+                        <i class="bi bi-person-badge-fill me-1"></i> 2. Student Identity & Personal Profile
+                    </span>
+                    <span class="badge bg-primary text-white" style="font-size: 0.68rem;">Step 2</span>
+                </div>
+                <div class="card-body p-2.5">
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <label asp-for="Name" class="form-label small fw-semibold text-muted">Student Full Name *</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light"><i class="bi bi-person text-primary"></i></span>
+                                <input asp-for="Name" class="form-control form-control-sm fw-bold" id="previewName" placeholder="e.g. Aarav Kumar Singh" required autofocus autocomplete="off" />
+                            </div>
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Gender" class="form-label small fw-semibold text-muted">Gender *</label>
+                            <select asp-for="Gender" class="form-select form-select-sm" id="genderSelect" required>
+                                <option value="Male">👦 Male</option>
+                                <option value="Female">👧 Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="DateOfBirth" class="form-label small fw-semibold text-muted">Date of Birth *</label>
+                            <input asp-for="DateOfBirth" class="form-control form-control-sm" type="date" id="dobInput" required />
+                            <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="BloodGroup" class="form-label small fw-semibold text-muted">Blood Group</label>
+                            <select asp-for="BloodGroup" class="form-select form-select-sm" id="previewBlood">
+                                <option value="B+">B+</option>
+                                <option value="O+">O+</option>
+                                <option value="A+">A+</option>
+                                <option value="AB+">AB+</option>
+                                <option value="B-">B-</option>
+                                <option value="O-">O-</option>
+                                <option value="A-">A-</option>
+                                <option value="AB-">AB-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="AdmissionDate" class="form-label small fw-semibold text-muted">Date of Admission *</label>
+                            <input asp-for="AdmissionDate" class="form-control form-control-sm" type="date" required />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. PARENTS & GUARDIAN DETAILS -->
+            <div class="card card-custom mb-2">
+                <div class="card-header-custom py-1.5 px-3 bg-light d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-success small">
+                        <i class="bi bi-people-fill me-1"></i> 3. Parents & Emergency Contact
+                    </span>
+                    <span class="badge bg-success text-white" style="font-size: 0.68rem;">Step 3</span>
+                </div>
+                <div class="card-body p-2.5">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <label asp-for="FatherName" class="form-label small fw-semibold text-muted">Father's Full Name *</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light"><i class="bi bi-person-fill text-muted"></i></span>
+                                <input asp-for="FatherName" class="form-control form-control-sm fw-semibold" id="previewFather" placeholder="e.g. Shri Rajesh Kumar" required />
+                            </div>
+                            <span asp-validation-for="FatherName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="FatherMobile" class="form-label small fw-semibold text-muted">Father's Mobile (WhatsApp) *</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light"><i class="bi bi-telephone-fill text-success"></i></span>
+                                <input asp-for="FatherMobile" class="form-control form-control-sm fw-bold" id="previewMobile" placeholder="10-digit mobile number" maxlength="10" required />
+                            </div>
+                            <span asp-validation-for="FatherMobile" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="MotherName" class="form-label small fw-semibold text-muted">Mother's Full Name *</label>
+                            <input asp-for="MotherName" class="form-control form-control-sm" placeholder="e.g. Smt. Sunita Devi" required />
+                            <span asp-validation-for="MotherName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="MotherMobile" class="form-label small fw-semibold text-muted">Mother's Mobile (Optional)</label>
+                            <input asp-for="MotherMobile" class="form-control form-control-sm" placeholder="Optional phone number" maxlength="10" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. RESIDENTIAL LOCATION -->
+            <div class="card card-custom mb-2">
+                <div class="card-header-custom py-1.5 px-3 bg-light d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-warning-emphasis small">
+                        <i class="bi bi-geo-alt-fill me-1"></i> 4. Residential Address & City
+                    </span>
+                    <span class="badge bg-warning text-dark" style="font-size: 0.68rem;">Step 4</span>
+                </div>
+                <div class="card-body p-2.5">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <label asp-for="Address" class="form-label small fw-semibold text-muted">Street / Village / Ward Address *</label>
+                            <input asp-for="Address" class="form-control form-control-sm" id="previewAddress" placeholder="e.g. Ward No 4, Station Road" required />
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="City" class="form-label small fw-semibold text-muted">City / Block *</label>
+                            <input asp-for="City" class="form-control form-control-sm" value="Piro" required />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="State" class="form-label small fw-semibold text-muted">State *</label>
+                            <input asp-for="State" class="form-control form-control-sm" value="Bihar" required />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="PinCode" class="form-label small fw-semibold text-muted">PIN Code *</label>
+                            <input asp-for="PinCode" class="form-control form-control-sm" value="802207" required />
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. STUDENT PERSONAL DETAILS & PHOTO -->
-        <div class="col-md-7">
-            <div class="card card-custom p-3 h-100 border-start border-4 border-info">
-                <h6 class="fw-bold text-info mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-person-fill"></i>
-                    <span>2. Student Bio & Personal Details</span>
-                </h6>
-                <div class="row g-2">
-                    <div class="col-12">
-                        <label asp-for="Name" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="Name" class="form-control form-control-sm fw-bold" placeholder="e.g. Aarav Kumar Sharma" required autofocus />
-                        <span asp-validation-for="Name" class="text-danger small"></span>
+        <!-- RIGHT COLUMN: LIVE STUDENT ID CARD PREVIEW & PHOTO STUDIO (30%) -->
+        <div class="col-lg-4">
+            <!-- Student Live ID Card Widget -->
+            <div class="card card-custom mb-2 border-primary shadow-sm" style="background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);">
+                <div class="card-header py-1.5 px-3 text-white d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%); border-top-left-radius: 6px; border-top-right-radius: 6px;">
+                    <div class="d-flex align-items-center gap-1.5">
+                        <img src="/uploads/schools/rnb-logo.jpg" style="width: 22px; height: 22px; border-radius: 50%; background: #fff;" onerror="this.src='/images/rnb-logo.jpg'" />
+                        <span class="fw-bold small" style="font-family: 'Outfit', sans-serif;">R N B PUBLIC SCHOOL</span>
                     </div>
-                    <div class="col-md-4">
-                        <label asp-for="DateOfBirth" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="DateOfBirth" class="form-control form-control-sm" type="date" required />
-                        <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                    <span class="badge bg-warning text-dark py-0.5 px-1.5" style="font-size: 0.65rem;">STUDENT ID</span>
+                </div>
+                <div class="card-body p-3 text-center">
+                    <!-- Photo Circle with live preview & upload overlay -->
+                    <div class="position-relative mx-auto mb-2" style="width: 82px; height: 82px;">
+                        <div class="avatar-preview-box rounded-circle shadow-sm border border-2 border-primary overflow-hidden bg-white d-flex align-items-center justify-content-center" style="width: 82px; height: 82px;">
+                            <img id="photoPreview" src="/images/avatars/teacher-m1.svg" alt="Preview" style="width: 100%; height: 100%; object-fit: cover;" />
+                            <i id="photoPlaceholder" class="bi bi-person-fill text-muted" style="font-size: 2.5rem; display: none;"></i>
+                        </div>
+                        <label for="photoInput" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-1 shadow cursor-pointer" style="width: 26px; height: 26px; font-size: 0.75rem; cursor: pointer;" title="Upload Photo">
+                            <i class="bi bi-camera-fill"></i>
+                        </label>
                     </div>
-                    <div class="col-md-4">
-                        <label asp-for="Gender" class="form-label small fw-semibold text-muted"></label>
-                        <select asp-for="Gender" class="form-select form-select-sm" required>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                        <span asp-validation-for="Gender" class="text-danger small"></span>
+
+                    <!-- Hidden actual file input -->
+                    <input asp-for="PhotoFile" class="d-none" type="file" accept="image/*" id="photoInput" />
+
+                    <!-- Live Student Name & Badges -->
+                    <h6 class="fw-bold text-dark mb-0" id="cardNameDisplay" style="font-family: 'Outfit', sans-serif;">Student Name</h6>
+                    <div class="text-muted small mb-2" style="font-size: 0.72rem;">
+                        <span class="badge bg-primary-subtle text-primary border me-1" id="cardClassDisplay">Class & Section</span>
+                        <span class="badge bg-success-subtle text-success border" id="cardRollDisplay">Roll #--</span>
                     </div>
-                    <div class="col-md-4">
-                        <label asp-for="BloodGroup" class="form-label small fw-semibold text-muted"></label>
-                        <select asp-for="BloodGroup" class="form-select form-select-sm">
-                            <option value="O+">O+</option>
-                            <option value="A+">A+</option>
-                            <option value="B+">B+</option>
-                            <option value="AB+">AB+</option>
-                            <option value="O-">O-</option>
-                            <option value="A-">A-</option>
-                            <option value="B-">B-</option>
-                            <option value="AB-">AB-</option>
-                        </select>
+
+                    <!-- Compact ID Details Grid -->
+                    <div class="bg-white rounded border p-2 text-start small mb-2" style="font-size: 0.74rem;">
+                        <div class="d-flex justify-content-between py-0.5 border-bottom">
+                            <span class="text-muted">Admission No:</span>
+                            <span class="fw-bold text-primary" id="cardAdmDisplay">@Model.AdmissionNumber</span>
+                        </div>
+                        <div class="d-flex justify-content-between py-0.5 border-bottom">
+                            <span class="text-muted">Father Name:</span>
+                            <span class="fw-semibold text-dark text-truncate" id="cardFatherDisplay" style="max-width: 130px;">--</span>
+                        </div>
+                        <div class="d-flex justify-content-between py-0.5 border-bottom">
+                            <span class="text-muted">Contact:</span>
+                            <span class="fw-semibold text-success" id="cardMobileDisplay">--</span>
+                        </div>
+                        <div class="d-flex justify-content-between py-0.5">
+                            <span class="text-muted">Blood Group:</span>
+                            <span class="badge bg-danger text-white py-0 px-1" id="cardBloodDisplay">B+</span>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label asp-for="AdmissionDate" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="AdmissionDate" class="form-control form-control-sm" type="date" required />
-                    </div>
-                    <div class="col-md-6">
-                        <label asp-for="Email" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="Email" class="form-control form-control-sm" placeholder="student/parent email" />
+
+                    <div class="text-muted" style="font-size: 0.68rem;">
+                        <i class="bi bi-geo-alt-fill text-danger me-1"></i> Station Road, Piro, Bhojpur (Bihar)
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- PHOTO UPLOAD WITH LIVE PREVIEW -->
-        <div class="col-md-5">
-            <div class="card card-custom p-3 h-100 text-center d-flex flex-column justify-content-center">
-                <h6 class="fw-bold text-muted mb-2">Student Photo</h6>
-                <div class="avatar-preview-box mx-auto mb-2 border rounded-3 bg-light d-flex align-items-center justify-content-center overflow-hidden" style="width: 100px; height: 110px;">
-                    <img id="photoPreview" src="/images/default-avatar.png" alt="Preview" style="width: 100%; height: 100%; object-fit: cover; display: none;" />
-                    <i id="photoPlaceholder" class="bi bi-person-bounding-box fs-1 text-muted"></i>
-                </div>
-                <input asp-for="PhotoFile" class="form-control form-control-sm" type="file" accept="image/*" id="photoInput" />
-                <small class="text-muted mt-1" style="font-size: 0.72rem;">JPG, PNG, WEBP (Max 2MB)</small>
-            </div>
-        </div>
-
-        <!-- 3. PARENT & GUARDIAN CONTACT DETAILS -->
-        <div class="col-md-6">
-            <div class="card card-custom p-3 h-100 border-start border-4 border-success">
-                <h6 class="fw-bold text-success mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-people-fill"></i>
-                    <span>3. Parents & Guardian Details</span>
-                </h6>
-                <div class="row g-2">
-                    <div class="col-md-6">
-                        <label asp-for="FatherName" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="FatherName" class="form-control form-control-sm" placeholder="Father's full name" required />
-                        <span asp-validation-for="FatherName" class="text-danger small"></span>
-                    </div>
-                    <div class="col-md-6">
-                        <label asp-for="FatherMobile" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="FatherMobile" class="form-control form-control-sm" placeholder="10-digit mobile" required />
-                        <span asp-validation-for="FatherMobile" class="text-danger small"></span>
-                    </div>
-                    <div class="col-md-6">
-                        <label asp-for="MotherName" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="MotherName" class="form-control form-control-sm" placeholder="Mother's full name" required />
-                        <span asp-validation-for="MotherName" class="text-danger small"></span>
-                    </div>
-                    <div class="col-md-6">
-                        <label asp-for="MotherMobile" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="MotherMobile" class="form-control form-control-sm" placeholder="Mother's mobile (optional)" />
-                    </div>
-                    <div class="col-12">
-                        <label asp-for="GuardianName" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="GuardianName" class="form-control form-control-sm" placeholder="Local guardian name if different" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. RESIDENTIAL LOCATION & ADDRESS -->
-        <div class="col-md-6">
-            <div class="card card-custom p-3 h-100 border-start border-4 border-warning">
-                <h6 class="fw-bold text-warning mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-geo-alt-fill"></i>
-                    <span>4. Residential Address & Location</span>
-                </h6>
-                <div class="row g-2">
-                    <div class="col-12">
-                        <label asp-for="Address" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="Address" class="form-control form-control-sm" placeholder="Village / Ward / Street Address" required />
-                        <span asp-validation-for="Address" class="text-danger small"></span>
-                    </div>
-                    <div class="col-md-4">
-                        <label asp-for="City" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="City" class="form-control form-control-sm" value="Piro" required />
-                    </div>
-                    <div class="col-md-4">
-                        <label asp-for="State" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="State" class="form-control form-control-sm" value="Bihar" required />
-                    </div>
-                    <div class="col-md-4">
-                        <label asp-for="PinCode" class="form-label small fw-semibold text-muted"></label>
-                        <input asp-for="PinCode" class="form-control form-control-sm" value="802207" required />
-                    </div>
-                </div>
+            <!-- Fast Enrollment Checklist Card -->
+            <div class="card card-custom p-2.5 bg-light">
+                <span class="fw-bold small text-muted text-uppercase mb-2 d-block" style="font-size: 0.68rem; letter-spacing: 0.5px;">
+                    <i class="bi bi-shield-check text-success me-1"></i> Fast Verification Checklist
+                </span>
+                <ul class="list-unstyled mb-0 small" style="font-size: 0.74rem;">
+                    <li class="py-1 d-flex align-items-center gap-1.5 text-muted" id="checkName">
+                        <i class="bi bi-circle text-muted"></i> Student Full Name
+                    </li>
+                    <li class="py-1 d-flex align-items-center gap-1.5 text-muted" id="checkClass">
+                        <i class="bi bi-circle text-muted"></i> Classroom & Section Allocated
+                    </li>
+                    <li class="py-1 d-flex align-items-center gap-1.5 text-muted" id="checkParent">
+                        <i class="bi bi-circle text-muted"></i> Father Name & Mobile
+                    </li>
+                    <li class="py-1 d-flex align-items-center gap-1.5 text-muted" id="checkAddress">
+                        <i class="bi bi-circle text-muted"></i> Local Residential Address
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 
-    <!-- ACTION BUTTON BAR -->
-    <div class="card card-custom p-3 bg-light border d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 sticky-bottom shadow-sm">
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Cancel</a>
+    <!-- DOCKED STICKY ACTION BUTTON BAR -->
+    <div class="card card-custom p-2 bg-white border d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 sticky-bottom shadow">
+        <a asp-action="Index" class="btn btn-light border btn-sm py-1 px-3 text-muted" style="font-size: 0.78rem;">
+            <i class="bi bi-x-lg me-1"></i> Cancel
+        </a>
         <div class="d-flex flex-wrap gap-2">
-            <button type="submit" name="submitAction" value="Save" class="btn btn-primary btn-sm px-3 fw-bold">
+            <button type="submit" name="submitAction" value="Save" class="btn btn-primary btn-sm py-1.5 px-3 fw-bold shadow-sm" style="font-size: 0.8rem;">
                 <i class="bi bi-check2-circle me-1"></i> Save & Return
             </button>
-            <button type="submit" name="submitAction" value="SaveAndNew" class="btn btn-success btn-sm px-3 fw-bold">
+            <button type="submit" name="submitAction" value="SaveAndNew" class="btn btn-success btn-sm py-1.5 px-3 fw-bold shadow-sm" style="font-size: 0.8rem;">
                 <i class="bi bi-person-plus-fill me-1"></i> Save & Admit Next (+)
             </button>
-            <button type="submit" name="submitAction" value="SaveAndPrint" class="btn btn-dark btn-sm px-3 fw-bold">
-                <i class="bi bi-printer me-1"></i> Save & Print Slip
+            <button type="submit" name="submitAction" value="SaveAndPrint" class="btn btn-dark btn-sm py-1.5 px-3 fw-bold shadow-sm" style="font-size: 0.8rem;">
+                <i class="bi bi-printer-fill text-warning me-1"></i> Save & Print Official Slip
             </button>
         </div>
     </div>
@@ -220,45 +304,90 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Photo live preview
-        document.getElementById('photoInput').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const preview = document.getElementById('photoPreview');
-                    preview.src = event.target.result;
-                    preview.style.display = 'block';
-                    document.getElementById('photoPlaceholder').style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        $(document).ready(function () {
+            // Live Student ID Card Sync
+            function updateCard() {
+                var name = $('#previewName').val().trim();
+                var adm = $('#previewAdmNo').val().trim();
+                var roll = $('#rollInput').val().trim();
+                var clsText = $('#classSelect option:selected').text();
+                var secText = $('#sectionSelect option:selected').text();
+                var father = $('#previewFather').val().trim();
+                var mobile = $('#previewMobile').val().trim();
+                var blood = $('#previewBlood').val();
+                var gender = $('#genderSelect').val();
+                var address = $('#previewAddress').val().trim();
 
-        // Dynamic Section and Auto-Roll Loader
-        $('#classSelect').on('change', function () {
-            var classId = $(this).val();
-            var $sec = $('#sectionSelect');
-            $sec.empty();
-            if (classId) {
-                $.getJSON('/DEO/GetSections?classId=' + classId, function (data) {
-                    $.each(data, function (i, item) {
-                        $sec.append($('<option>', { value: item.id, text: item.name }));
+                $('#cardNameDisplay').text(name || 'Student Name');
+                $('#cardAdmDisplay').text(adm || '--');
+                $('#cardRollDisplay').text('Roll #' + (roll || '--'));
+                $('#cardClassDisplay').text((clsText || 'Class') + ' - Sec ' + (secText || 'A'));
+                $('#cardFatherDisplay').text(father || '--');
+                $('#cardMobileDisplay').text(mobile || '--');
+                $('#cardBloodDisplay').text(blood || 'B+');
+
+                // Update verification checklist checkmarks
+                toggleCheck('#checkName', name.length > 0);
+                toggleCheck('#checkClass', clsText.length > 0 && secText.length > 0);
+                toggleCheck('#checkParent', father.length > 0 && mobile.length >= 10);
+                toggleCheck('#checkAddress', address.length > 0);
+            }
+
+            function toggleCheck(selector, isDone) {
+                var $el = $(selector);
+                if (isDone) {
+                    $el.removeClass('text-muted').addClass('text-success fw-semibold');
+                    $el.find('i').removeClass('bi-circle text-muted').addClass('bi-check-circle-fill text-success');
+                } else {
+                    $el.removeClass('text-success fw-semibold').addClass('text-muted');
+                    $el.find('i').removeClass('bi-check-circle-fill text-success').addClass('bi-circle text-muted');
+                }
+            }
+
+            $('#previewName, #previewAdmNo, #rollInput, #previewFather, #previewMobile, #previewAddress').on('input', updateCard);
+            $('#classSelect, #sectionSelect, #previewBlood, #genderSelect').on('change', updateCard);
+
+            // Live Photo Upload Preview
+            $('#photoInput').on('change', function (e) {
+                var file = e.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        $('#photoPreview').attr('src', event.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Dynamic Section and Auto-Roll Loader
+            $('#classSelect').on('change', function () {
+                var classId = $(this).val();
+                var $sec = $('#sectionSelect');
+                $sec.empty();
+                if (classId) {
+                    $.getJSON('/DEO/GetSections?classId=' + classId, function (data) {
+                        $.each(data, function (i, item) {
+                            $sec.append($('<option>', { value: item.id, text: item.name }));
+                        });
+                        $sec.trigger('change');
+                        updateCard();
                     });
-                    $sec.trigger('change');
-                });
-            }
-        });
+                }
+            });
 
-        $('#sectionSelect').on('change', function () {
-            var sectionId = $(this).val();
-            if (sectionId) {
-                $.getJSON('/DEO/GetNextRoll?sectionId=' + sectionId, function (res) {
-                    if (res && res.nextRoll) {
-                        $('#rollInput').val(res.nextRoll);
-                    }
-                });
-            }
+            $('#sectionSelect').on('change', function () {
+                var sectionId = $(this).val();
+                if (sectionId) {
+                    $.getJSON('/DEO/GetNextRoll?sectionId=' + sectionId, function (res) {
+                        if (res && res.nextRoll) {
+                            $('#rollInput').val(res.nextRoll);
+                            updateCard();
+                        }
+                    });
+                }
+            });
+
+            updateCard();
         });
     </script>
 }
