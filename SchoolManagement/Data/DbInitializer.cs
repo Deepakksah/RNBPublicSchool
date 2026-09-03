@@ -19,8 +19,48 @@ namespace SchoolManagement.Data
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
-            // Ensure database is created
+            // Ensure database and any newly added tables are created
             await context.Database.EnsureCreatedAsync();
+
+            try
+            {
+                var ddl = @"
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Parents')
+BEGIN
+    CREATE TABLE [Parents] (
+        [Id] int NOT NULL IDENTITY,
+        [SchoolId] int NOT NULL,
+        [Name] nvarchar(100) NOT NULL,
+        [Mobile] nvarchar(20) NOT NULL,
+        [Email] nvarchar(150) NULL,
+        [Occupation] nvarchar(100) NULL,
+        [Address] nvarchar(250) NULL,
+        [UserId] nvarchar(450) NULL,
+        [IsActive] bit NOT NULL DEFAULT 1,
+        CONSTRAINT [PK_Parents] PRIMARY KEY ([Id]),
+        CONSTRAINT [FK_Parents_Schools_SchoolId] FOREIGN KEY ([SchoolId]) REFERENCES [Schools] ([Id]) ON DELETE CASCADE
+    );
+    CREATE INDEX [IX_Parents_SchoolId] ON [Parents] ([SchoolId]);
+END
+
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'StudentParents')
+BEGIN
+    CREATE TABLE [StudentParents] (
+        [Id] int NOT NULL IDENTITY,
+        [StudentId] int NOT NULL,
+        [ParentId] int NOT NULL,
+        [Relationship] nvarchar(50) NOT NULL DEFAULT 'Father',
+        CONSTRAINT [PK_StudentParents] PRIMARY KEY ([Id]),
+        CONSTRAINT [FK_StudentParents_Students_StudentId] FOREIGN KEY ([StudentId]) REFERENCES [Students] ([Id]) ON DELETE CASCADE,
+        CONSTRAINT [FK_StudentParents_Parents_ParentId] FOREIGN KEY ([ParentId]) REFERENCES [Parents] ([Id]) ON DELETE CASCADE
+    );
+    CREATE INDEX [IX_StudentParents_StudentId] ON [StudentParents] ([StudentId]);
+    CREATE INDEX [IX_StudentParents_ParentId] ON [StudentParents] ([ParentId]);
+END
+";
+                await context.Database.ExecuteSqlRawAsync(ddl);
+            }
+            catch { }
 
             // 1. Seed Roles
             string[] roleNames = {
