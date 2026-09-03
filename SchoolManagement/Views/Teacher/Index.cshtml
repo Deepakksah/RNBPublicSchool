@@ -1,0 +1,173 @@
+@model SchoolManagement.ViewModels.TeacherListViewModel
+@{
+    ViewData["Title"] = "Teacher Management";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-1">Faculty & Teacher Management</h4>
+        <p class="text-muted small mb-0">Total Staff: <strong>@Model.TotalCount</strong></p>
+    </div>
+    <div class="mt-3 mt-md-0 d-flex gap-2">
+        <a asp-action="Create" class="btn btn-primary d-flex align-items-center gap-1 shadow-sm">
+            <i class="bi bi-person-plus-fill"></i>
+            <span>Register Faculty Member</span>
+        </a>
+    </div>
+</div>
+
+<!-- Search Form -->
+<div class="card card-custom p-3 mb-4">
+    <form method="get" asp-action="Index" class="row g-2 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label small fw-semibold text-muted">Search Faculty</label>
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input asp-for="SearchTerm" class="form-control" placeholder="Search by name, employee ID, subject, mobile..." />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-semibold text-muted">Status</label>
+            <select asp-for="SelectedStatus" class="form-select form-select-sm">
+                <option value="">-- All --</option>
+                <option value="1">Active</option>
+                <option value="2">Inactive</option>
+                <option value="3">Resigned</option>
+                <option value="4">On Leave</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-1">
+            <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Search</button>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Reset</a>
+        </div>
+    </form>
+</div>
+
+<!-- Teachers Table -->
+<div class="card card-custom">
+    <div class="table-responsive">
+        <table class="table-custom mb-0">
+            <thead>
+                <tr>
+                    <th>Teacher Name</th>
+                    <th>Employee ID</th>
+                    <th>Designation</th>
+                    <th>Primary Subject</th>
+                    <th>Class Teacher</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Teachers.Any())
+                {
+                    @foreach (var t in Model.Teachers)
+                    {
+                        <tr>
+                            <td>
+                                @{
+                                    var avatarSrc = !string.IsNullOrEmpty(t.Photo) 
+                                        ? t.Photo 
+                                        : (t.Gender == "Female" 
+                                            ? ((t.Id % 2 == 0) ? "/images/avatars/teacher-f1.svg" : "/images/avatars/teacher-f2.svg")
+                                            : ((t.Id % 2 == 0) ? "/images/avatars/teacher-m1.svg" : "/images/avatars/teacher-m2.svg"));
+                                }
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="@avatarSrc" alt="@t.Name" class="avatar-img shadow-sm border border-2 border-primary-subtle rounded-circle flex-shrink-0" style="width: 32px; height: 32px; object-fit: cover;" onerror="this.src='/images/avatars/teacher-m1.svg'" />
+                                    <div>
+                                        <a asp-action="Details" asp-route-id="@t.Id" class="fw-bold text-decoration-none text-dark" style="font-size: 0.82rem;">
+                                            @t.Name
+                                        </a>
+                                        <div class="text-muted" style="font-size: 0.72rem;">@t.Qualification</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-light text-secondary border">@t.EmployeeId</span></td>
+                            <td>@t.Designation</td>
+                            <td><span class="badge bg-primary-subtle text-primary">@(t.Subject ?? "General")</span></td>
+                            <td>
+                                @if (t.ClassTeacherSections.Any())
+                                {
+                                    <span class="badge bg-info-subtle text-info">
+                                        @string.Join(", ", t.ClassTeacherSections.Select(s => $"{s.Class.Name}-{s.Name}"))
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">None</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="small">@t.Mobile</div>
+                                <small class="text-muted">@t.Email</small>
+                            </td>
+                            <td>
+                                @if (t.Status == SchoolManagement.Models.TeacherStatus.Active)
+                                {
+                                    <span class="badge badge-status badge-active">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-status badge-inactive">@t.Status</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light border dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        Action
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                        <li><a class="dropdown-item" asp-action="Details" asp-route-id="@t.Id"><i class="bi bi-eye me-2"></i>Profile & Attendance</a></li>
+                                        <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@t.Id"><i class="bi bi-pencil me-2"></i>Edit Information</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form asp-action="Delete" asp-route-id="@t.Id" method="post" onsubmit="return confirm('Are you sure you want to deactivate this teacher?');">
+                                                <button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash me-2"></i>Deactivate</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-person-badge fs-2 d-block mb-2"></i>
+                            No faculty members found.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="card-footer bg-white d-flex flex-column flex-sm-row justify-content-between align-items-center py-3 gap-2">
+            <span class="text-muted small">Showing page <strong>@Model.PageIndex</strong> of <strong>@Model.TotalPages</strong> (Total: @Model.TotalCount faculty)</span>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item @(Model.PageIndex <= 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex - 1)" asp-route-search="@Model.SearchTerm" asp-route-status="@Model.SelectedStatus">Previous</a>
+                </li>
+                @{
+                    int startPage = Math.Max(1, Model.PageIndex - 2);
+                    int endPage = Math.Min(Model.TotalPages, Model.PageIndex + 2);
+                }
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-search="@Model.SearchTerm" asp-route-status="@Model.SelectedStatus">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.PageIndex >= Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex + 1)" asp-route-search="@Model.SearchTerm" asp-route-status="@Model.SelectedStatus">Next</a>
+                </li>
+            </ul>
+        </div>
+    }
+</div>

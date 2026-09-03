@@ -1,0 +1,336 @@
+@model SchoolManagement.ViewModels.StudentAttendanceSheetViewModel
+@{
+    ViewData["Title"] = "Student Attendance Sheet";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-2 mb-3 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">Student Attendance Registry</h4>
+        <p class="text-muted small mb-0">Record and verify daily attendance with live counters & pagination</p>
+    </div>
+    <div class="d-flex gap-2 mt-2 mt-md-0">
+        <a asp-action="DailyReport" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+            <i class="bi bi-clipboard-data"></i> Daily Summary
+        </a>
+        <a asp-action="Analytics" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+            <i class="bi bi-graph-up"></i> Analytics
+        </a>
+    </div>
+</div>
+
+<!-- Selection Filter Card -->
+<div class="card card-custom p-3 mb-3">
+    <form method="get" asp-action="StudentAttendance" class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label small fw-semibold text-muted">Academic Year</label>
+            <select asp-for="AcademicYearId" asp-items="Model.AcademicYears" class="form-select form-select-sm" required></select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label small fw-semibold text-muted">Class</label>
+            <select asp-for="ClassId" asp-items="Model.Classes" class="form-select form-select-sm" id="filterClassSelect" required>
+                <option value="">-- Select Class --</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label small fw-semibold text-muted">Section</label>
+            <select asp-for="SectionId" asp-items="Model.Sections" class="form-select form-select-sm" id="filterSectionSelect" required>
+                <option value="">-- Select Section --</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label small fw-semibold text-muted">Attendance Date</label>
+            <input asp-for="AttendanceDate" class="form-control form-control-sm" type="date" required />
+        </div>
+
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">Load</button>
+        </div>
+    </form>
+</div>
+
+@if (Model.Students != null && Model.Students.Any())
+{
+    <form asp-action="SaveStudentAttendance" method="post" id="attendanceForm">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="SchoolId" />
+        <input type="hidden" asp-for="ClassId" />
+        <input type="hidden" asp-for="SectionId" />
+        <input type="hidden" asp-for="AcademicYearId" />
+        <input type="hidden" asp-for="AttendanceDate" />
+
+        <!-- Quick Actions & Counters Bar -->
+        <div class="card card-custom p-2 mb-2 bg-light border">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="small fw-bold text-muted me-1">Quick Mark:</span>
+                    <button type="button" class="btn btn-sm btn-success py-1 px-2 fw-semibold" onclick="markAllStudents('1')">
+                        <i class="bi bi-check-all me-1"></i> Mark All Present
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger py-1 px-2 fw-semibold" onclick="markAllStudents('2')">
+                        <i class="bi bi-x-octagon me-1"></i> Mark All Absent
+                    </button>
+                    @if (Model.IsAlreadyMarked)
+                    {
+                        <span class="badge bg-info-subtle text-info border border-info-subtle ms-1" style="font-size: 0.72rem;">
+                            <i class="bi bi-info-circle me-1"></i> Already marked for this date (updates will overwrite)
+                        </span>
+                    }
+                </div>
+
+                <!-- Live Counters -->
+                <div class="d-flex gap-3 small">
+                    <div>Present: <strong class="text-success" id="countPresent">0</strong></div>
+                    <div>Absent: <strong class="text-danger" id="countAbsent">0</strong></div>
+                    <div>Leave: <strong class="text-warning" id="countLeave">0</strong></div>
+                    <div>Late: <strong class="text-primary" id="countLate">0</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination & Filter Controls for Table -->
+        <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+            <div class="d-flex align-items-center gap-2">
+                <span class="small text-muted">Show:</span>
+                <select id="sheetPageSize" class="form-select form-select-sm py-0" style="width: 80px;" onchange="changePageSize(this.value)">
+                    <option value="15" selected>15</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="9999">All</option>
+                </select>
+                <span class="small text-muted">students / page</span>
+            </div>
+            <div style="max-width: 220px;">
+                <input type="text" id="sheetSearchInput" class="form-control form-control-sm" placeholder="Quick search in sheet..." onkeyup="filterSheetRows()" />
+            </div>
+        </div>
+
+        <!-- Attendance Sheet Table -->
+        <div class="card card-custom mb-3">
+            <div class="table-responsive">
+                <table class="table-custom mb-0" id="attendanceTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 70px;">Roll No</th>
+                            <th>Student Details</th>
+                            <th class="text-center" style="width: 290px;">Attendance Status</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceTableBody">
+                        @for (int i = 0; i < Model.Students.Count; i++)
+                        {
+                            var st = Model.Students[i];
+                            <tr class="attendance-row" data-index="@i" data-roll="@st.RollNumber" data-name="@st.StudentName.ToLower()" data-adm="@st.AdmissionNumber.ToLower()">
+                                <td class="fw-bold fs-6">
+                                    <input type="hidden" name="Students[@i].StudentId" value="@st.StudentId" />
+                                    <input type="hidden" name="Students[@i].RollNumber" value="@st.RollNumber" />
+                                    <input type="hidden" name="Students[@i].AdmissionNumber" value="@st.AdmissionNumber" />
+                                    <input type="hidden" name="Students[@i].StudentName" value="@st.StudentName" />
+                                    @st.RollNumber
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar-img avatar-sm bg-light border d-flex align-items-center justify-content-center overflow-hidden">
+                                            @if (!string.IsNullOrEmpty(st.Photo))
+                                            {
+                                                <img src="@st.Photo" alt="Photo" style="width: 100%; height: 100%; object-fit: cover;" />
+                                            }
+                                            else
+                                            {
+                                                <span class="fw-bold text-primary small">@(st.StudentName.Substring(0, 1).ToUpper())</span>
+                                            }
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">@st.StudentName</div>
+                                            <small class="text-muted" style="font-size: 0.72rem;">Adm: @st.AdmissionNumber</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check attendance-radio" name="Students[@i].Status" id="pres_@i" value="1" @(st.Status == SchoolManagement.Models.AttendanceStatus.Present ? "checked" : "") autocomplete="off" onchange="updateLiveCounters()">
+                                        <label class="btn btn-outline-success btn-sm py-0.5" for="pres_@i">Present</label>
+
+                                        <input type="radio" class="btn-check attendance-radio" name="Students[@i].Status" id="abs_@i" value="2" @(st.Status == SchoolManagement.Models.AttendanceStatus.Absent ? "checked" : "") autocomplete="off" onchange="updateLiveCounters()">
+                                        <label class="btn btn-outline-danger btn-sm py-0.5" for="abs_@i">Absent</label>
+
+                                        <input type="radio" class="btn-check attendance-radio" name="Students[@i].Status" id="leave_@i" value="3" @(st.Status == SchoolManagement.Models.AttendanceStatus.Leave ? "checked" : "") autocomplete="off" onchange="updateLiveCounters()">
+                                        <label class="btn btn-outline-warning btn-sm py-0.5" for="leave_@i">Leave</label>
+
+                                        <input type="radio" class="btn-check attendance-radio" name="Students[@i].Status" id="late_@i" value="4" @(st.Status == SchoolManagement.Models.AttendanceStatus.Late ? "checked" : "") autocomplete="off" onchange="updateLiveCounters()">
+                                        <label class="btn btn-outline-primary btn-sm py-0.5" for="late_@i">Late</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="text" name="Students[@i].Remarks" value="@st.Remarks" class="form-control form-control-sm py-0" placeholder="Optional remark..." />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Client-side Pagination Footer -->
+            <div class="card-footer bg-white p-2 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+                <span class="text-muted small" id="sheetPaginationInfo">
+                    Showing 1-15 of @Model.Students.Count students
+                </span>
+                <ul class="pagination pagination-sm mb-0" id="sheetPaginationNav">
+                    <!-- Dynamic Page Buttons -->
+                </ul>
+                <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm">
+                    <i class="bi bi-save me-1"></i> Save Attendance
+                </button>
+            </div>
+        </div>
+    </form>
+}
+else if (Model.ClassId > 0 && Model.SectionId > 0)
+{
+    <div class="card card-custom p-4 text-center text-muted">
+        <i class="bi bi-people fs-2 text-secondary mb-2"></i>
+        <h6>No Enrolled Students</h6>
+        <p class="small mb-3">There are no active students in this class and section.</p>
+        <a asp-controller="DEO" asp-action="Admission" class="btn btn-primary btn-sm mx-auto">
+            <i class="bi bi-person-plus me-1"></i> Admit Students (DEO Desk)
+        </a>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        let currentPage = 1;
+        let pageSize = 15;
+        let visibleRows = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            initPagination();
+            updateLiveCounters();
+        });
+
+        function initPagination() {
+            const rows = Array.from(document.querySelectorAll('.attendance-row'));
+            visibleRows = rows;
+            renderPagination();
+        }
+
+        function changePageSize(size) {
+            pageSize = parseInt(size);
+            currentPage = 1;
+            renderPagination();
+        }
+
+        function filterSheetRows() {
+            const term = document.getElementById('sheetSearchInput').value.trim().toLowerCase();
+            const allRows = Array.from(document.querySelectorAll('.attendance-row'));
+            if (!term) {
+                visibleRows = allRows;
+            } else {
+                visibleRows = allRows.filter(r => {
+                    const name = r.getAttribute('data-name');
+                    const roll = r.getAttribute('data-roll');
+                    const adm = r.getAttribute('data-adm');
+                    return name.includes(term) || roll.includes(term) || adm.includes(term);
+                });
+            }
+            currentPage = 1;
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const total = visibleRows.length;
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            // Hide all rows first
+            document.querySelectorAll('.attendance-row').forEach(r => r.style.display = 'none');
+
+            // Show current page slice
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, total);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                if (visibleRows[i]) {
+                    visibleRows[i].style.display = '';
+                }
+            }
+
+            // Update Info
+            const info = document.getElementById('sheetPaginationInfo');
+            if (info) {
+                info.innerText = total > 0 
+                    ? `Showing ${startIndex + 1}-${endIndex} of ${total} students (Page ${currentPage}/${totalPages})`
+                    : `No students matching filter`;
+            }
+
+            // Build Page Nav Buttons
+            const nav = document.getElementById('sheetPaginationNav');
+            if (!nav) return;
+            nav.innerHTML = '';
+
+            if (totalPages > 1) {
+                // Prev
+                nav.innerHTML += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link py-0 px-2" href="javascript:goToPage(${currentPage - 1})">Prev</a>
+                </li>`;
+
+                const startP = Math.max(1, currentPage - 2);
+                const endP = Math.Min ? Math.min(totalPages, currentPage + 2) : Math.min(totalPages, currentPage + 2);
+
+                for (let p = startP; p <= endP; p++) {
+                    nav.innerHTML += `<li class="page-item ${p === currentPage ? 'active' : ''}">
+                        <a class="page-link py-0 px-2" href="javascript:goToPage(${p})">${p}</a>
+                    </li>`;
+                }
+
+                // Next
+                nav.innerHTML += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link py-0 px-2" href="javascript:goToPage(${currentPage + 1})">Next</a>
+                </li>`;
+            }
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderPagination();
+        }
+
+        function markAllStudents(statusVal) {
+            document.querySelectorAll('.attendance-radio[value="' + statusVal + '"]').forEach(radio => {
+                radio.checked = true;
+            });
+            updateLiveCounters();
+        }
+
+        function updateLiveCounters() {
+            let p = 0, a = 0, l = 0, lt = 0;
+            document.querySelectorAll('.attendance-radio:checked').forEach(r => {
+                if (r.value === '1') p++;
+                else if (r.value === '2') a++;
+                else if (r.value === '3') l++;
+                else if (r.value === '4') lt++;
+            });
+            const cp = document.getElementById('countPresent'); if (cp) cp.innerText = p;
+            const ca = document.getElementById('countAbsent'); if (ca) ca.innerText = a;
+            const cl = document.getElementById('countLeave'); if (cl) cl.innerText = l;
+            const clt = document.getElementById('countLate'); if (clt) clt.innerText = lt;
+        }
+
+        // Section loader
+        $('#filterClassSelect').on('change', function () {
+            var classId = $(this).val();
+            var $sec = $('#filterSectionSelect');
+            $sec.empty().append('<option value="">-- Select Section --</option>');
+            if (classId) {
+                $.getJSON('/DEO/GetSections?classId=' + classId, function (data) {
+                    $.each(data, function (i, item) {
+                        $sec.append($('<option>', { value: item.id, text: item.name }));
+                    });
+                });
+            }
+        });
+    </script>
+}

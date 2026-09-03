@@ -1,0 +1,65 @@
+@model IEnumerable<SchoolManagement.Models.AcademicYear>
+@{
+    ViewData["Title"] = "Academic Years";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-1">Academic Years Management</h4>
+        <p class="text-muted small mb-0">Control operational sessions and enrollment years</p>
+    </div>
+    <div class="mt-3 mt-md-0">
+        <a asp-action="Create" class="btn btn-primary d-flex align-items-center gap-1 shadow-sm">
+            <i class="bi bi-plus-lg"></i>
+            <span>Add Academic Year</span>
+        </a>
+    </div>
+</div>
+
+<div class="card card-custom">
+    <div class="table-responsive">
+        <table class="table-custom mb-0">
+            <thead>
+                <tr>
+                    <th>Academic Year</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ay in Model)
+                {
+                    <tr>
+                        <td class="fw-bold fs-6">
+                            <i class="bi bi-calendar3 text-primary me-2"></i>@ay.Name
+                        </td>
+                        <td>@ay.StartDate.ToString("dd MMM yyyy")</td>
+                        <td>@ay.EndDate.ToString("dd MMM yyyy")</td>
+                        <td>
+                            @if (ay.IsCurrent)
+                            {
+                                <span class="badge bg-success"><i class="bi bi-check-circle-fill me-1"></i>Active Session</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-secondary border">Archived / Inactive</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            @if (!ay.IsCurrent)
+                            {
+                                <form asp-action="SetCurrent" asp-route-id="@ay.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary py-0 px-2">
+                                        Set as Active Session
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

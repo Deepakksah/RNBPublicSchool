@@ -1,0 +1,97 @@
+@model IEnumerable<SchoolManagement.ViewModels.ClassItemViewModel>
+@{
+    ViewData["Title"] = "Classes & Sections";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-1">Classes & Sections Management</h4>
+        <p class="text-muted small mb-0">Organize academic grades, divisions, rooms, and class teachers</p>
+    </div>
+    <div class="mt-3 mt-md-0 d-flex gap-2">
+        <a asp-action="Create" class="btn btn-primary d-flex align-items-center gap-1 shadow-sm">
+            <i class="bi bi-plus-lg"></i>
+            <span>Add Class</span>
+        </a>
+        <a asp-controller="Section" asp-action="Create" class="btn btn-outline-primary d-flex align-items-center gap-1">
+            <i class="bi bi-layout-split"></i>
+            <span>Add Section</span>
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    @if (Model.Any())
+    {
+        @foreach (var cls in Model)
+        {
+            <div class="col-md-6 col-xl-4">
+                <div class="card card-custom h-100 p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-journal-bookmark-fill text-primary fs-4"></i>
+                            <h5 class="fw-bold mb-0">@cls.Name</h5>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-light border py-0 px-2" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@cls.Id"><i class="bi bi-pencil me-2"></i>Edit Class</a></li>
+                                <li><a class="dropdown-item" asp-controller="Section" asp-action="Create" asp-route-classId="@cls.Id"><i class="bi bi-plus-lg me-2"></i>Add Section</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-action="Delete" asp-route-id="@cls.Id" method="post" onsubmit="return confirm('Delete class and its sections?');">
+                                        <button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash me-2"></i>Delete</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between small text-muted mb-3">
+                        <span><strong>@cls.SectionCount</strong> Sections</span>
+                        <span><strong>@cls.StudentCount</strong> Students Enrolled</span>
+                    </div>
+
+                    <!-- Sections List -->
+                    <div class="list-group list-group-flush border rounded-3 overflow-hidden">
+                        @if (cls.Sections.Any())
+                        {
+                            @foreach (var sec in cls.Sections)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center px-3 py-2">
+                                    <div>
+                                        <span class="fw-bold text-dark">Section @sec.Name</span>
+                                        <div class="text-muted" style="font-size: 0.72rem;">
+                                            <i class="bi bi-person me-1"></i>@(sec.ClassTeacher?.Name ?? "No Teacher Assigned")
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <a asp-action="Dashboard" asp-route-classId="@cls.Id" asp-route-sectionId="@sec.Id" class="btn btn-sm btn-light border py-0 px-2" title="Class Roster">
+                                            <i class="bi bi-clipboard-data text-primary"></i>
+                                        </a>
+                                        <a asp-controller="Section" asp-action="Edit" asp-route-id="@sec.Id" class="btn btn-sm btn-light border py-0 px-2" title="Edit Section">
+                                            <i class="bi bi-pencil text-secondary"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="p-3 text-center text-muted small">No sections created yet.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center py-5 text-muted">
+            <i class="bi bi-journal-x fs-1 d-block mb-2"></i>
+            No classes defined yet. Click "Add Class" above to begin.
+        </div>
+    }
+</div>

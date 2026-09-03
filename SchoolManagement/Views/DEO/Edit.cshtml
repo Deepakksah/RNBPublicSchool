@@ -1,0 +1,218 @@
+@model SchoolManagement.ViewModels.DEOAdmissionViewModel
+@{
+    ViewData["Title"] = $"Edit Student — {Model.Name}";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-3 border-bottom">
+    <div>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Index" class="btn btn-sm btn-light border text-muted"><i class="bi bi-arrow-left"></i></a>
+            <h4 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">Edit Student Record — @Model.Name</h4>
+            <span class="badge bg-light text-secondary border">Adm No: @Model.AdmissionNumber</span>
+        </div>
+        <p class="text-muted small mb-0 ms-md-4 ps-md-2">Update student parameters. Changes sync automatically across all related attendance and class tables.</p>
+    </div>
+</div>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="SchoolId" />
+    <input type="hidden" asp-for="ExistingPhoto" />
+
+    <div class="row g-3 mb-4">
+        <!-- 1. ACADEMIC & CLASSROOM ASSIGNMENT -->
+        <div class="col-12">
+            <div class="card card-custom p-3 border-start border-4 border-primary">
+                <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>1. Academic Enrollment & Classroom</span>
+                </h6>
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <label asp-for="AcademicYearId" class="form-label small fw-semibold text-muted"></label>
+                        <select asp-for="AcademicYearId" asp-items="Model.AcademicYears" class="form-select form-select-sm" required></select>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="ClassId" class="form-label small fw-semibold text-muted"></label>
+                        <select asp-for="ClassId" asp-items="Model.Classes" class="form-select form-select-sm" id="classSelect" required></select>
+                    </div>
+                    <div class="col-md-2">
+                        <label asp-for="SectionId" class="form-label small fw-semibold text-muted"></label>
+                        <select asp-for="SectionId" asp-items="Model.Sections" class="form-select form-select-sm" id="sectionSelect" required></select>
+                    </div>
+                    <div class="col-md-2">
+                        <label asp-for="AdmissionNumber" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="AdmissionNumber" class="form-control form-control-sm fw-bold bg-light" readonly />
+                    </div>
+                    <div class="col-md-2">
+                        <label asp-for="RollNumber" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="RollNumber" class="form-control form-control-sm fw-bold" type="number" min="1" max="200" required />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. STUDENT BIO & PHOTO -->
+        <div class="col-md-7">
+            <div class="card card-custom p-3 h-100 border-start border-4 border-info">
+                <h6 class="fw-bold text-info mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-person-fill"></i>
+                    <span>2. Student Bio & Personal Details</span>
+                </h6>
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label asp-for="Name" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="Name" class="form-control form-control-sm fw-bold" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="DateOfBirth" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="DateOfBirth" class="form-control form-control-sm" type="date" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Gender" class="form-label small fw-semibold text-muted"></label>
+                        <select asp-for="Gender" class="form-select form-select-sm" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="BloodGroup" class="form-label small fw-semibold text-muted"></label>
+                        <select asp-for="BloodGroup" class="form-select form-select-sm">
+                            <option value="O+">O+</option>
+                            <option value="A+">A+</option>
+                            <option value="B+">B+</option>
+                            <option value="AB+">AB+</option>
+                            <option value="O-">O-</option>
+                            <option value="A-">A-</option>
+                            <option value="B-">B-</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="form-label small fw-semibold text-muted"></label>
+                        <select asp-for="Status" class="form-select form-select-sm">
+                            <option value="1">Active</option>
+                            <option value="2">Inactive</option>
+                            <option value="3">Transferred</option>
+                            <option value="4">Left School</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="Email" class="form-control form-control-sm" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHOTO -->
+        <div class="col-md-5">
+            <div class="card card-custom p-3 h-100 text-center d-flex flex-column justify-content-center">
+                <h6 class="fw-bold text-muted mb-2">Student Photo</h6>
+                <div class="avatar-preview-box mx-auto mb-2 border rounded-3 bg-light d-flex align-items-center justify-content-center overflow-hidden" style="width: 100px; height: 110px;">
+                    @if (!string.IsNullOrEmpty(Model.ExistingPhoto))
+                    {
+                        <img id="photoPreview" src="@Model.ExistingPhoto" alt="Photo" style="width: 100%; height: 100%; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <img id="photoPreview" src="/images/default-avatar.png" alt="Preview" style="width: 100%; height: 100%; object-fit: cover; display: none;" />
+                        <i id="photoPlaceholder" class="bi bi-person-bounding-box fs-1 text-muted"></i>
+                    }
+                </div>
+                <input asp-for="PhotoFile" class="form-control form-control-sm" type="file" accept="image/*" id="photoInput" />
+                <small class="text-muted mt-1" style="font-size: 0.72rem;">Leave empty to keep existing photo</small>
+            </div>
+        </div>
+
+        <!-- 3. PARENTS -->
+        <div class="col-md-6">
+            <div class="card card-custom p-3 h-100 border-start border-4 border-success">
+                <h6 class="fw-bold text-success mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-people-fill"></i>
+                    <span>3. Parents & Guardian Details</span>
+                </h6>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label asp-for="FatherName" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="FatherName" class="form-control form-control-sm" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="FatherMobile" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="FatherMobile" class="form-control form-control-sm" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="MotherName" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="MotherName" class="form-control form-control-sm" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="MotherMobile" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="MotherMobile" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="GuardianName" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="GuardianName" class="form-control form-control-sm" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ADDRESS -->
+        <div class="col-md-6">
+            <div class="card card-custom p-3 h-100 border-start border-4 border-warning">
+                <h6 class="fw-bold text-warning mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <span>4. Residential Address & Location</span>
+                </h6>
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label asp-for="Address" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="Address" class="form-control form-control-sm" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="City" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="City" class="form-control form-control-sm" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="State" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="State" class="form-control form-control-sm" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="PinCode" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="PinCode" class="form-control form-control-sm" required />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACTION BUTTON BAR -->
+    <div class="card card-custom p-3 bg-light border d-flex flex-row justify-content-between align-items-center sticky-bottom shadow-sm">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Cancel</a>
+        <button type="submit" class="btn btn-primary btn-sm px-4 fw-bold">
+            <i class="bi bi-check2-circle me-1"></i> Update Student Record
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('photoInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const preview = document.getElementById('photoPreview');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    const ph = document.getElementById('photoPlaceholder');
+                    if (ph) ph.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

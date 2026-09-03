@@ -1,0 +1,81 @@
+@model IEnumerable<SchoolManagement.Models.AuditLog>
+@{
+    ViewData["Title"] = "System Audit Logs";
+    int pageIndex = ViewBag.PageIndex ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int totalCount = ViewBag.TotalCount ?? 0;
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-1">Audit Trail & Security Logs</h4>
+        <p class="text-muted small mb-0">Total Tracked Events: <strong>@totalCount.ToString("N0")</strong></p>
+    </div>
+</div>
+
+<div class="card card-custom">
+    <div class="table-responsive">
+        <table class="table-custom mb-0">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Entity</th>
+                    <th>Details</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var a in Model)
+                    {
+                        var actionBadge = a.Action.Contains("Create") || a.Action.Contains("Bootstrap") || a.Action.Contains("Seed") ? "bg-success-subtle text-success" :
+                                          a.Action.Contains("Delete") || a.Action.Contains("Deactivate") ? "bg-danger-subtle text-danger" :
+                                          a.Action.Contains("Update") || a.Action.Contains("Attendance") ? "bg-primary-subtle text-primary" : "bg-light text-secondary border";
+
+                        <tr>
+                            <td class="small text-muted">@a.DateTime.ToLocalTime().ToString("dd MMM yyyy, HH:mm:ss")</td>
+                            <td class="fw-bold">@a.UserName</td>
+                            <td><span class="badge @actionBadge">@a.Action</span></td>
+                            <td>@a.Entity @(string.IsNullOrEmpty(a.EntityId) ? "" : $"#{a.EntityId}")</td>
+                            <td class="small text-dark">@(a.Details ?? "-")</td>
+                            <td class="small text-muted"><code>@(a.IpAddress ?? "127.0.0.1")</code></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="6" class="text-center py-5 text-muted">No audit records found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    @if (totalPages > 1)
+    {
+        <div class="card-footer bg-white d-flex flex-column flex-sm-row justify-content-between align-items-center py-3 gap-2">
+            <span class="text-muted small">Showing page <strong>@pageIndex</strong> of <strong>@totalPages</strong> (Total: @totalCount.ToString("N0") logs)</span>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item @(pageIndex <= 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(pageIndex - 1)">Previous</a>
+                </li>
+                @{
+                    int startPage = Math.Max(1, pageIndex - 2);
+                    int endPage = Math.Min(totalPages, pageIndex + 2);
+                }
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == pageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                    </li>
+                }
+                <li class="page-item @(pageIndex >= totalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(pageIndex + 1)">Next</a>
+                </li>
+            </ul>
+        </div>
+    }
+</div>

@@ -1,0 +1,22 @@
+# robots.txt for R N B Public School Portal
+User-agent: *
+Allow: /
+Allow: /School/PublicProfile/
+Allow: /School/Register/
+Allow: /images/
+Allow: /uploads/
+Allow: /css/
+Allow: /js/
+Disallow: /Account/
+Disallow: /Dashboard/
+Disallow: /DEO/
+Disallow: /Student/
+Disallow: /Teacher/
+Disallow: /Attendance/
+Disallow: /Class/
+Disallow: /Section/
+Disallow: /Holiday/
+Disallow: /Audit/
+Disallow: /Notification/
+
+Sitemap: https://rnbpublicschool.com/sitemap.xml

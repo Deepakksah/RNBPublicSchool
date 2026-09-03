@@ -1,0 +1,128 @@
+@model SchoolManagement.ViewModels.AttendanceAnalyticsViewModel
+@{
+    ViewData["Title"] = "Attendance Analytics";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-1">Attendance Analytics & Trends</h4>
+        <p class="text-muted small mb-0">Multi-dimensional attendance analytics and visual chart trends</p>
+    </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="card card-custom p-3 mb-4">
+    <form method="get" asp-action="Analytics" class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label small fw-semibold text-muted">Class</label>
+            <select asp-for="ClassId" asp-items="Model.Classes" class="form-select form-select-sm" id="filterClassSelect">
+                <option value="">-- All Classes --</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small fw-semibold text-muted">Section</label>
+            <select asp-for="SectionId" asp-items="Model.Sections" class="form-select form-select-sm" id="filterSectionSelect">
+                <option value="">-- All Sections --</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-semibold text-muted">From Date</label>
+            <input asp-for="DateFrom" class="form-control form-control-sm" type="date" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-semibold text-muted">To Date</label>
+            <input asp-for="DateTo" class="form-control form-control-sm" type="date" />
+        </div>
+        <div class="col-md-2 d-flex gap-1">
+            <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Analyze</button>
+            <a asp-action="Analytics" class="btn btn-outline-secondary btn-sm">Reset</a>
+        </div>
+    </form>
+</div>
+
+<!-- KPI Summary Row -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-blue">
+            <div>
+                <div class="kpi-title">Total Records</div>
+                <div class="kpi-value">@Model.TotalRecords.ToString("N0")</div>
+            </div>
+            <div class="kpi-icon-wrapper"><i class="bi bi-calendar3"></i></div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-green">
+            <div>
+                <div class="kpi-title">Present Count</div>
+                <div class="kpi-value">@Model.TotalPresent.ToString("N0")</div>
+                <small class="text-success fw-bold">@Model.AttendancePercentage% Attendance</small>
+            </div>
+            <div class="kpi-icon-wrapper"><i class="bi bi-check-circle"></i></div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-red">
+            <div>
+                <div class="kpi-title">Absent Count</div>
+                <div class="kpi-value">@Model.TotalAbsent.ToString("N0")</div>
+            </div>
+            <div class="kpi-icon-wrapper"><i class="bi bi-x-circle"></i></div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-amber">
+            <div>
+                <div class="kpi-title">Leave / Late Count</div>
+                <div class="kpi-value">@(Model.TotalLeave + Model.TotalLate)</div>
+            </div>
+            <div class="kpi-icon-wrapper"><i class="bi bi-clock-history"></i></div>
+        </div>
+    </div>
+</div>
+
+<!-- Dynamic Trend Chart -->
+<div class="card card-custom p-4 mb-4">
+    <div class="card-header-custom mb-3 p-0">
+        <h6 class="fw-bold mb-0"><i class="bi bi-graph-up me-2 text-primary"></i>Daily Trend Comparison (Present vs Absent)</h6>
+    </div>
+    <div style="height: 320px;">
+        <canvas id="analyticsTrendChart"></canvas>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('analyticsTrendChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartDates)),
+                datasets: [
+                    {
+                        label: 'Present Students',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartPresentCounts)),
+                        backgroundColor: '#10b981',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Absent Students',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartAbsentCounts)),
+                        backgroundColor: '#ef4444',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true, beginAtZero: true }
+                }
+            }
+        });
+    });
+</script>
+}

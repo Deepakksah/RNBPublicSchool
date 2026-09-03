@@ -1,0 +1,161 @@
+@model SchoolManagement.ViewModels.ClassDashboardViewModel
+@{
+    ViewData["Title"] = $"{Model.Class.Name} - Section {Model.Section.Name} Dashboard";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-1">@Model.Class.Name - Section @Model.Section.Name</h4>
+        <p class="text-muted small mb-0">Class Roster & Attendance for <strong>@Model.Date.ToString("dd MMMM yyyy")</strong></p>
+    </div>
+    <div class="d-flex gap-2 mt-3 mt-md-0">
+        <a asp-controller="Attendance" asp-action="StudentAttendance" asp-route-classId="@Model.Class.Id" asp-route-sectionId="@Model.Section.Id" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm">
+            <i class="bi bi-calendar-check"></i> Mark Attendance
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back</a>
+    </div>
+</div>
+
+<!-- Class Teacher & KPI Cards -->
+<div class="row g-4 mb-4">
+    <!-- Class Teacher Info -->
+    <div class="col-lg-4">
+        <div class="card card-custom p-4 h-100">
+            <h6 class="fw-bold text-primary mb-3"><i class="bi bi-person-badge-fill me-2"></i>Class Teacher</h6>
+            @if (Model.ClassTeacher != null)
+            {
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar-img avatar-lg bg-light border d-flex align-items-center justify-content-center overflow-hidden flex-shrink-0">
+                        @if (!string.IsNullOrEmpty(Model.ClassTeacher.Photo))
+                        {
+                            <img src="@Model.ClassTeacher.Photo" alt="Teacher" style="width: 100%; height: 100%; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <i class="bi bi-person-fill fs-2 text-primary"></i>
+                        }
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">@Model.ClassTeacher.Name</h6>
+                        <div class="text-muted small">@Model.ClassTeacher.Designation</div>
+                        <div class="text-muted small"><i class="bi bi-telephone me-1"></i>@Model.ClassTeacher.Mobile</div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="text-muted small py-3">No Class Teacher currently assigned.</div>
+            }
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="col-lg-8">
+        <div class="row g-3">
+            <div class="col-sm-6 col-md-3">
+                <div class="kpi-card kpi-blue">
+                    <div>
+                        <div class="kpi-title">Total Enrolled</div>
+                        <div class="kpi-value">@Model.TotalStudents</div>
+                    </div>
+                    <div class="kpi-icon-wrapper"><i class="bi bi-people-fill"></i></div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="kpi-card kpi-green">
+                    <div>
+                        <div class="kpi-title">Present</div>
+                        <div class="kpi-value">@Model.Present</div>
+                    </div>
+                    <div class="kpi-icon-wrapper"><i class="bi bi-check-circle"></i></div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="kpi-card kpi-red">
+                    <div>
+                        <div class="kpi-title">Absent</div>
+                        <div class="kpi-value">@Model.Absent</div>
+                    </div>
+                    <div class="kpi-icon-wrapper"><i class="bi bi-x-circle"></i></div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="kpi-card kpi-cyan">
+                    <div>
+                        <div class="kpi-title">Attendance Rate</div>
+                        <div class="kpi-value">@Model.AttendancePercentage%</div>
+                    </div>
+                    <div class="kpi-icon-wrapper"><i class="bi bi-percent"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Student Roster Table -->
+<div class="card card-custom">
+    <div class="card-header-custom">
+        <h6 class="fw-bold mb-0"><i class="bi bi-person-lines-fill me-2 text-primary"></i>Student Roster</h6>
+    </div>
+    <div class="table-responsive">
+        <table class="table-custom mb-0">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Admission No</th>
+                    <th>Student Name</th>
+                    <th>Attendance Status</th>
+                    <th>Remarks</th>
+                    <th class="text-end">Profile</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Students.Any())
+                {
+                    @foreach (var s in Model.Students)
+                    {
+                        var badgeClass = s.Status == SchoolManagement.Models.AttendanceStatus.Present ? "badge-present" :
+                                         s.Status == SchoolManagement.Models.AttendanceStatus.Absent ? "badge-absent" :
+                                         s.Status == SchoolManagement.Models.AttendanceStatus.Leave ? "badge-leave" :
+                                         s.Status == SchoolManagement.Models.AttendanceStatus.Late ? "badge-late" : "bg-light text-muted border";
+
+                        <tr>
+                            <td class="fw-bold">@s.RollNumber</td>
+                            <td><span class="badge bg-light text-secondary border">@s.AdmissionNumber</span></td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar-img avatar-sm bg-light border d-flex align-items-center justify-content-center overflow-hidden">
+                                        @if (!string.IsNullOrEmpty(s.Photo))
+                                        {
+                                            <img src="@s.Photo" alt="Photo" style="width: 100%; height: 100%; object-fit: cover;" />
+                                        }
+                                        else
+                                        {
+                                            <span class="small fw-bold text-primary">@(s.StudentName.Substring(0, 1).ToUpper())</span>
+                                        }
+                                    </div>
+                                    <span class="fw-semibold">@s.StudentName</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-status @badgeClass">
+                                    @(s.Status?.ToString() ?? "Not Marked")
+                                </span>
+                            </td>
+                            <td class="text-muted small">@(s.Remarks ?? "-")</td>
+                            <td class="text-end">
+                                <a asp-controller="Student" asp-action="Details" asp-route-id="@s.StudentId" class="btn btn-sm btn-light border py-0 px-2" title="View Profile">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="6" class="text-center py-4 text-muted">No students assigned to this section.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

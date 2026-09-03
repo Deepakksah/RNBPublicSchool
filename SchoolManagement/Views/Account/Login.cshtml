@@ -1,0 +1,351 @@
+@model SchoolManagement.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Sign In — RNB Public School";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In - RNB Public School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #07090e;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            color: #111827;
+        }
+
+        /* Centered Floating Modal Card */
+        .login-card {
+            width: 100%;
+            max-width: 920px;
+            min-height: 560px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Left Blue Half */
+        .left-panel {
+            flex: 1.15;
+            background: linear-gradient(135deg, #324ced 0%, #253fe6 50%, #1c32d4 100%);
+            color: #ffffff;
+            padding: 3.25rem 3rem 2.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Curved Arc Wireframes */
+        .arc-wireframe {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            pointer-events: none;
+            opacity: 0.22;
+        }
+
+        .star-icon {
+            font-size: 3.5rem;
+            line-height: 1;
+            color: #ffffff;
+            margin-bottom: 2rem;
+            display: inline-block;
+            font-weight: 300;
+        }
+
+        .left-content {
+            position: relative;
+            z-index: 2;
+            margin-top: -1rem;
+        }
+
+        .left-heading {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 2.75rem;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.25rem;
+            color: #ffffff;
+        }
+
+        .left-desc {
+            font-size: 0.95rem;
+            line-height: 1.65;
+            color: rgba(255, 255, 255, 0.88);
+            max-width: 380px;
+            font-weight: 400;
+        }
+
+        .left-footer {
+            position: relative;
+            z-index: 2;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        /* Right White Half */
+        .right-panel {
+            flex: 0.95;
+            background: #ffffff;
+            padding: 3.25rem 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-bottom: 2.25rem;
+        }
+
+        .brand-header img {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: contain;
+        }
+
+        .brand-header span {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: #111827;
+            letter-spacing: -0.02em;
+        }
+
+        .form-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 1.85rem;
+            color: #111827;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.35rem;
+        }
+
+        .form-subtitle {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-bottom: 1.75rem;
+            line-height: 1.45;
+        }
+
+        .form-subtitle a {
+            color: #111827;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .input-box {
+            width: 100%;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 0.75rem 0.9rem;
+            font-size: 0.88rem;
+            color: #111827;
+            margin-bottom: 1rem;
+            transition: all 0.15s ease;
+        }
+
+        .input-box:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: #253fe6;
+            box-shadow: 0 0 0 3px rgba(37, 63, 230, 0.12);
+        }
+
+        .btn-login-now {
+            width: 100%;
+            background: #171717;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            margin-top: 0.25rem;
+        }
+
+        .btn-login-now:hover {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .btn-google-login {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 0.65rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .btn-google-login:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .forgot-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .forgot-link a {
+            color: #111827;
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+        @@media (max-width: 768px) {
+            .login-card {
+                flex-direction: column;
+                max-width: 440px;
+            }
+            .left-panel {
+                padding: 2.5rem 2rem;
+            }
+            .left-heading {
+                font-size: 2rem;
+            }
+            .right-panel {
+                padding: 2.5rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <!-- LEFT ROYAL BLUE PANEL -->
+        <div class="left-panel">
+            <!-- Curved Concentric Wireframe Lines -->
+            <svg class="arc-wireframe" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-60 480 C 140 420, 320 220, 460 -40" stroke="#ffffff" stroke-width="1.2" />
+                <path d="M-60 530 C 170 470, 350 270, 500 -10" stroke="#ffffff" stroke-width="1.2" />
+                <path d="M-60 580 C 200 520, 380 320, 540 20" stroke="#ffffff" stroke-width="1.2" />
+                <path d="M-60 630 C 230 570, 410 370, 580 50" stroke="#ffffff" stroke-width="1.2" />
+            </svg>
+
+            <!-- Star / Asterisk Symbol -->
+            <div class="star-icon">
+                <i class="bi bi-asterisk"></i>
+            </div>
+
+            <!-- Main Heading & Text -->
+            <div class="left-content">
+                <h1 class="left-heading">Hello<br />RNB Public School! 👋</h1>
+                <p class="left-desc">
+                    Skip repetitive and manual school management tasks. Get highly productive through ERP automation and save tons of time!
+                </p>
+            </div>
+
+            <!-- Copyright Footer -->
+            <div class="left-footer">
+                &copy; @DateTime.Today.Year RNB Public School. All rights reserved.
+            </div>
+        </div>
+
+        <!-- RIGHT WHITE PANEL -->
+        <div class="right-panel">
+            <div>
+                <!-- Brand Header -->
+                <div class="brand-header">
+                    <img src="/uploads/schools/rnb-logo.jpg" alt="Logo" onerror="this.src='/images/rnb-logo.jpg'" />
+                    <span>RNB Public School</span>
+                </div>
+
+                <!-- Form Heading -->
+                <h2 class="form-title">Welcome Back!</h2>
+                <div class="form-subtitle">
+                    Don't have an account? <a href="/School/Profile/RNB-PIRO" target="_blank">Contact administration</a>, it's quick and easy.
+                </div>
+
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+                {
+                    <div class="alert alert-danger py-2 px-3 small d-flex align-items-center gap-2 mb-3 rounded-2">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        <div>@Html.ValidationSummary(true, "", new { @class = "text-danger mb-0" })</div>
+                    </div>
+                }
+
+                <!-- Sign In Form -->
+                <form asp-action="Login" method="post" id="loginForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="ReturnUrl" />
+
+                    <div>
+                        <input asp-for="EmailOrUserName" id="loginUsername" class="input-box" placeholder="Username or email (e.g. admin.rnb)" value="admin.rnb" required autofocus />
+                        <span asp-validation-for="EmailOrUserName" class="text-danger small d-block mb-1"></span>
+                    </div>
+
+                    <div>
+                        <input asp-for="Password" id="loginPassword" type="password" class="input-box" placeholder="Password" value="Admin@123" required />
+                        <span asp-validation-for="Password" class="text-danger small d-block mb-1"></span>
+                    </div>
+
+                    <button type="submit" class="btn-login-now">
+                        Login Now
+                    </button>
+                </form>
+
+                <!-- Super Admin Quick Pill -->
+                <button type="button" class="btn-google-login" onclick="fillSuperAdmin()">
+                    <i class="bi bi-shield-lock text-primary"></i>
+                    <span>Quick Fill Super Admin</span>
+                </button>
+            </div>
+
+            <!-- Forgot Password Link -->
+            <div class="forgot-link">
+                Forget password? <a href="tel:+919470835418">Click here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fillSuperAdmin() {
+            document.getElementById('loginUsername').value = 'superadmin';
+            document.getElementById('loginPassword').value = 'Admin@123';
+        }
+    </script>
+</body>
+</html>

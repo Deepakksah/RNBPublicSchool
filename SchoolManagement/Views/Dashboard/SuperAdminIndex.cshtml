@@ -1,0 +1,272 @@
+@model SchoolManagement.ViewModels.SuperAdminDashboardViewModel
+@{
+    ViewData["Title"] = "Super Admin Central Dashboard";
+    var schools = ViewBag.AllSchools as List<SchoolManagement.Models.School> ?? new List<SchoolManagement.Models.School>();
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h3 class="fw-bold mb-1" style="font-family: 'Outfit', sans-serif;">System Overview</h3>
+        <p class="text-muted small mb-0">Multi-School Ecosystem Performance & Aggregate Attendance Metrics</p>
+    </div>
+    <div class="d-flex gap-2 mt-3 mt-md-0">
+        <a asp-controller="School" asp-action="Create" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm">
+            <i class="bi bi-plus-lg"></i>
+            <span>Register New School</span>
+        </a>
+        <a asp-controller="School" asp-action="Availability" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+            <i class="bi bi-activity"></i>
+            <span>Availability Status</span>
+        </a>
+    </div>
+</div>
+
+<!-- Primary KPI Cards Row -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-blue">
+            <div>
+                <div class="kpi-title">Total Schools</div>
+                <div class="kpi-value">@Model.TotalSchools</div>
+                <small class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>@Model.ActiveSchools Active</small>
+            </div>
+            <div class="kpi-icon-wrapper">
+                <i class="bi bi-buildings"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-green">
+            <div>
+                <div class="kpi-title">Total Students</div>
+                <div class="kpi-value">@Model.TotalStudents.ToString("N0")</div>
+                <small class="text-muted">Across all institutes</small>
+            </div>
+            <div class="kpi-icon-wrapper">
+                <i class="bi bi-mortarboard"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-purple">
+            <div>
+                <div class="kpi-title">Total Teachers</div>
+                <div class="kpi-value">@Model.TotalTeachers</div>
+                <small class="text-muted">Faculty strength</small>
+            </div>
+            <div class="kpi-icon-wrapper">
+                <i class="bi bi-person-badge"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-cyan">
+            <div>
+                <div class="kpi-title">Today's Attendance</div>
+                <div class="kpi-value">@Model.StudentAttendancePercentage%</div>
+                <small class="text-muted">@Model.StudentsPresentToday Present / @Model.StudentsAbsentToday Absent</small>
+            </div>
+            <div class="kpi-icon-wrapper">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+    <!-- School Strength Bar Chart -->
+    <div class="col-lg-8">
+        <div class="card card-custom h-100">
+            <div class="card-header-custom">
+                <h6 class="fw-bold mb-0"><i class="bi bi-bar-chart-fill text-primary me-2"></i>School-wise Strength Comparison</h6>
+                <span class="badge bg-light text-muted border">Real-time DB</span>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px;">
+                    <canvas id="schoolStrengthChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance Doughnut Chart -->
+    <div class="col-lg-4">
+        <div class="card card-custom h-100">
+            <div class="card-header-custom">
+                <h6 class="fw-bold mb-0"><i class="bi bi-pie-chart-fill text-success me-2"></i>Today's Attendance Ratio</h6>
+                <span class="badge bg-light text-muted border">System-wide</span>
+            </div>
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                <div style="width: 220px; height: 220px;">
+                    <canvas id="attendanceDoughnutChart"></canvas>
+                </div>
+                <div class="d-flex justify-content-around w-100 mt-3 pt-2 border-top text-center small">
+                    <div>
+                        <div class="text-muted">Present</div>
+                        <strong class="text-success fs-6">@Model.StudentsPresentToday</strong>
+                    </div>
+                    <div>
+                        <div class="text-muted">Absent</div>
+                        <strong class="text-danger fs-6">@Model.StudentsAbsentToday</strong>
+                    </div>
+                    <div>
+                        <div class="text-muted">Teachers Present</div>
+                        <strong class="text-primary fs-6">@Model.TeachersPresentToday</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schools Summary Table & Recent Activities -->
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card card-custom">
+            <div class="card-header-custom">
+                <h6 class="fw-bold mb-0"><i class="bi bi-building me-2 text-secondary"></i>Registered Institutes Summary</h6>
+                <a asp-controller="School" asp-action="Index" class="small text-decoration-none">View All &rarr;</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table-custom mb-0">
+                    <thead>
+                        <tr>
+                            <th>School Name</th>
+                            <th>Code</th>
+                            <th>Students</th>
+                            <th>Teachers</th>
+                            <th>Classes</th>
+                            <th>Today %</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in Model.SchoolSummaries)
+                        {
+                            <tr>
+                                <td class="fw-semibold">
+                                    <a asp-controller="Dashboard" asp-action="Index" asp-route-schoolId="@s.SchoolId" class="text-decoration-none text-dark">
+                                        @s.SchoolName
+                                    </a>
+                                </td>
+                                <td><span class="badge bg-light text-secondary border">@s.SchoolCode</span></td>
+                                <td>@s.StudentCount</td>
+                                <td>@s.TeacherCount</td>
+                                <td>@s.ClassCount</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress flex-grow-1" style="height: 6px; width: 60px;">
+                                            <div class="progress-bar bg-success" style="width: @s.TodayAttendanceRate%"></div>
+                                        </div>
+                                        <small class="fw-bold">@s.TodayAttendanceRate%</small>
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    <a asp-controller="Dashboard" asp-action="Index" asp-route-schoolId="@s.SchoolId" class="btn btn-sm btn-outline-primary py-0 px-2" title="Switch to this school">
+                                        <i class="bi bi-box-arrow-in-right me-1"></i> Manage
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Audit Activities -->
+    <div class="col-lg-4">
+        <div class="card card-custom">
+            <div class="card-header-custom">
+                <h6 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Recent System Activity</h6>
+                <a asp-controller="Audit" asp-action="Index" class="small text-decoration-none">Logs &rarr;</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush small">
+                    @if (Model.RecentActivities.Any())
+                    {
+                        @foreach (var act in Model.RecentActivities.Take(6))
+                        {
+                            <div class="list-group-item px-3 py-2">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong class="text-dark">@act.UserName</strong>
+                                    <span class="text-muted" style="font-size: 0.75rem;">@act.DateTime.ToLocalTime().ToString("g")</span>
+                                </div>
+                                <div class="text-muted">
+                                    <span class="badge bg-light text-primary border me-1">@act.Action</span>
+                                    @act.Entity: @(act.Details ?? "Action executed")
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="p-3 text-center text-muted">No recent activity recorded.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // School Strength Chart
+        const ctxStrength = document.getElementById('schoolStrengthChart').getContext('2d');
+        new Chart(ctxStrength, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SchoolNames)),
+                datasets: [
+                    {
+                        label: 'Students',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SchoolStudentCounts)),
+                        backgroundColor: '#2563eb',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Teachers',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SchoolTeacherCounts)),
+                        backgroundColor: '#0284c7',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Attendance Doughnut Chart
+        const ctxDoughnut = document.getElementById('attendanceDoughnutChart').getContext('2d');
+        new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Present', 'Absent'],
+                datasets: [{
+                    data: [@Model.StudentsPresentToday, @Model.StudentsAbsentToday],
+                    backgroundColor: ['#10b981', '#ef4444'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                },
+                cutout: '70%'
+            }
+        });
+    });
+</script>
+}

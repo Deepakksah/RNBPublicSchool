@@ -1,0 +1,176 @@
+@model SchoolManagement.ViewModels.StudentCreateEditViewModel
+@{
+    ViewData["Title"] = $"Edit {Model.Name}";
+}
+
+<div class="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-1">Edit Student Information</h4>
+        <p class="text-muted small mb-0">Admission No: <strong>@Model.AdmissionNumber</strong></p>
+    </div>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Profile
+    </a>
+</div>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="SchoolId" />
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-3"></div>
+
+    <div class="row g-4">
+        <!-- Personal & Parent Details -->
+        <div class="col-lg-8">
+            <div class="card card-custom p-4 mb-4">
+                <h5 class="fw-bold mb-3 border-bottom pb-2 text-primary"><i class="bi bi-person-fill me-2"></i>Personal Details</h5>
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label asp-for="Name" class="form-label fw-semibold small"></label>
+                        <input asp-for="Name" class="form-control" required />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Gender" class="form-label fw-semibold small"></label>
+                        <select asp-for="Gender" class="form-select">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="DateOfBirth" class="form-label fw-semibold small"></label>
+                        <input asp-for="DateOfBirth" class="form-control" type="date" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="BloodGroup" class="form-label fw-semibold small"></label>
+                        <select asp-for="BloodGroup" class="form-select">
+                            <option value="">-- Select --</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="PhotoFile" class="form-label fw-semibold small"></label>
+                        <input asp-for="PhotoFile" type="file" class="form-control" accept="image/*" />
+                        @if (!string.IsNullOrEmpty(Model.ExistingPhoto))
+                        {
+                            <div class="mt-2"><img src="@Model.ExistingPhoto" alt="Current Photo" style="height: 40px; border-radius: 50%;" /></div>
+                        }
+                    </div>
+                </div>
+
+                <h5 class="fw-bold my-4 border-bottom pb-2 text-primary"><i class="bi bi-people-fill me-2"></i>Parent Details</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="FatherName" class="form-label fw-semibold small"></label>
+                        <input asp-for="FatherName" class="form-control" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="MotherName" class="form-label fw-semibold small"></label>
+                        <input asp-for="MotherName" class="form-control" required />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="FatherMobile" class="form-label fw-semibold small"></label>
+                        <input asp-for="FatherMobile" class="form-control" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="MotherMobile" class="form-label fw-semibold small"></label>
+                        <input asp-for="MotherMobile" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label fw-semibold small"></label>
+                        <input asp-for="Email" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="GuardianName" class="form-label fw-semibold small"></label>
+                        <input asp-for="GuardianName" class="form-control" />
+                    </div>
+                </div>
+
+                <h5 class="fw-bold my-4 border-bottom pb-2 text-primary"><i class="bi bi-geo-alt me-2"></i>Address</h5>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="Address" class="form-label fw-semibold small"></label>
+                        <input asp-for="Address" class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="City" class="form-label fw-semibold small"></label>
+                        <input asp-for="City" class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="State" class="form-label fw-semibold small"></label>
+                        <input asp-for="State" class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="PinCode" class="form-label fw-semibold small"></label>
+                        <input asp-for="PinCode" class="form-control" required />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Details -->
+        <div class="col-lg-4">
+            <div class="card card-custom p-4 mb-4">
+                <h5 class="fw-bold mb-3 border-bottom pb-2 text-primary"><i class="bi bi-mortarboard-fill me-2"></i>Class & Section</h5>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="AcademicYearId" class="form-label fw-semibold small"></label>
+                        <select asp-for="AcademicYearId" asp-items="Model.AcademicYears" class="form-select" required></select>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="ClassId" class="form-label fw-semibold small"></label>
+                        <select asp-for="ClassId" asp-items="Model.Classes" class="form-select" id="filterClassSelect" required></select>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="SectionId" class="form-label fw-semibold small"></label>
+                        <select asp-for="SectionId" asp-items="Model.Sections" class="form-select" id="filterSectionSelect" required></select>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="AdmissionNumber" class="form-label fw-semibold small"></label>
+                        <input asp-for="AdmissionNumber" class="form-control text-uppercase" required />
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="RollNumber" class="form-label fw-semibold small"></label>
+                        <input asp-for="RollNumber" class="form-control" type="number" min="1" required />
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="AdmissionDate" class="form-label fw-semibold small"></label>
+                        <input asp-for="AdmissionDate" class="form-control" type="date" required />
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Status" class="form-label fw-semibold small"></label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="1">Active</option>
+                            <option value="2">Inactive</option>
+                            <option value="3">Transferred</option>
+                            <option value="4">Left School</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-top">
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm">
+                        <i class="bi bi-save me-1"></i> Update Details
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

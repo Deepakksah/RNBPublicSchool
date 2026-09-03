@@ -1,0 +1,156 @@
+@model IEnumerable<SchoolManagement.Models.Holiday>
+@{
+    ViewData["Title"] = "School Holidays & Government Calendar";
+    var holidays = Model.OrderBy(h => h.HolidayDate).ToList();
+    var currentMonthHolidays = holidays.Where(h => h.HolidayDate.Month == DateTime.Today.Month).ToList();
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-2 mb-3 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">Academic & Government Holiday Calendar (2026-27)</h4>
+        <p class="text-muted small mb-0">Gazetted leaves, state festivals, vacations & institutional breaks</p>
+    </div>
+    <div class="d-flex gap-2 mt-2 mt-md-0">
+        <a asp-action="Create" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm fw-semibold">
+            <i class="bi bi-calendar-plus-fill"></i> Add Custom Holiday
+        </a>
+    </div>
+</div>
+
+<!-- Summary Metrics -->
+<div class="row g-2 mb-3">
+    <div class="col-sm-6 col-xl-4">
+        <div class="kpi-card kpi-blue py-2">
+            <div>
+                <div class="kpi-title">Total Annual Holidays</div>
+                <div class="kpi-value">@holidays.Count</div>
+                <small class="text-white-50" style="font-size: 0.72rem;">Academic session 2026-27</small>
+            </div>
+            <div class="kpi-icon-wrapper">
+                <i class="bi bi-calendar3"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-4">
+        <div class="kpi-card kpi-green py-2">
+            <div>
+                <div class="kpi-title">Holidays in @DateTime.Today.ToString("MMMM") (Current)</div>
+                <div class="kpi-value">@currentMonthHolidays.Count</div>
+                <small class="text-white fw-semibold" style="font-size: 0.72rem;">Active this month</small>
+            </div>
+            <div class="kpi-icon-wrapper">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-4">
+        <div class="kpi-card kpi-purple py-2">
+            <div>
+                <div class="kpi-title">Upcoming Major Festivals</div>
+                <div class="kpi-value">Chhath & Diwali</div>
+                <small class="text-white-50" style="font-size: 0.72rem;">Bihar Grand Mahaparv</small>
+            </div>
+            <div class="kpi-icon-wrapper">
+                <i class="bi bi-stars"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Month Filters -->
+<div class="d-flex flex-wrap gap-1 mb-3">
+    <button class="btn btn-sm btn-dark month-filter-btn active py-0.5 px-2" data-month="all" onclick="filterByMonth('all', this)">All Months</button>
+    @for (int m = 1; m <= 12; m++)
+    {
+        var monthName = new DateTime(2026, m, 1).ToString("MMM");
+        var isCurrent = m == DateTime.Today.Month;
+        <button class="btn btn-sm @(isCurrent ? "btn-primary" : "btn-light border") month-filter-btn py-0.5 px-2" data-month="@m" onclick="filterByMonth('@m', this)">
+            @monthName @(isCurrent ? "★" : "")
+        </button>
+    }
+</div>
+
+<div class="card card-custom">
+    <div class="table-responsive">
+        <table class="table-custom mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 130px;">Month</th>
+                    <th>Holiday Event</th>
+                    <th style="width: 220px;">Date / Duration</th>
+                    <th>Day of Week</th>
+                    <th>Description</th>
+                    <th class="text-end" style="width: 70px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (holidays.Any())
+                {
+                    @foreach (var h in holidays)
+                    {
+                        <tr class="holiday-row" data-month="@h.HolidayDate.Month">
+                            <td>
+                                <span class="badge @(h.HolidayDate.Month == DateTime.Today.Month ? "bg-primary" : "bg-light text-dark border")" style="font-size: 0.75rem;">
+                                    @h.HolidayDate.ToString("MMMM")
+                                </span>
+                            </td>
+                            <td class="fw-bold text-dark">
+                                <i class="bi bi-calendar-event text-danger me-1"></i> @h.Name
+                            </td>
+                            <td>
+                                <span class="badge bg-danger-subtle text-danger fw-bold" style="font-size: 0.75rem;">
+                                    @h.HolidayDate.ToString("dd MMM yyyy")
+                                    @if (h.EndDate.HasValue && h.EndDate.Value > h.HolidayDate)
+                                    {
+                                        <span> to @h.EndDate.Value.ToString("dd MMM")</span>
+                                    }
+                                </span>
+                            </td>
+                            <td class="small text-muted">
+                                @h.HolidayDate.ToString("dddd")
+                            </td>
+                            <td class="text-muted small">
+                                @(h.Description ?? "Government / School Holiday")
+                            </td>
+                            <td class="text-end">
+                                <form asp-action="Delete" asp-route-id="@h.Id" method="post" onsubmit="return confirm('Remove this holiday?');" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No holidays found in calendar.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function filterByMonth(month, btn) {
+        document.querySelectorAll('.month-filter-btn').forEach(b => {
+            b.classList.remove('active', 'btn-dark', 'btn-primary');
+            b.classList.add('btn-light', 'border');
+        });
+        btn.classList.add('active', 'btn-primary');
+        btn.classList.remove('btn-light', 'border');
+
+        const rows = document.querySelectorAll('.holiday-row');
+        rows.forEach(r => {
+            if (month === 'all' || r.getAttribute('data-month') === month) {
+                r.style.display = '';
+            } else {
+                r.style.display = 'none';
+            }
+        });
+    }
+</script>
+}

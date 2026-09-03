@@ -1,0 +1,218 @@
+@model SchoolManagement.ViewModels.TeacherClassroomViewModel
+@{
+    ViewData["Title"] = $"{Model.Teacher.Name} - My Classroom";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-2 mb-3 border-bottom">
+    <div class="d-flex align-items-center gap-3">
+        <div class="avatar-img avatar-md bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-5 shadow-sm" style="width: 44px; height: 44px; border-radius: 10px;">
+            @(Model.Teacher.Name.Substring(0, 1).ToUpper())
+        </div>
+        <div>
+            <h4 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">Welcome, @Model.Teacher.Name</h4>
+            <div class="text-muted small">
+                <span>Designation: <strong>@Model.Teacher.Designation</strong></span>
+                <span class="mx-1">•</span>
+                @if (Model.AssignedSection != null)
+                {
+                    <span class="badge bg-primary-subtle text-primary fw-bold">Class Teacher: @Model.AssignedSection.Class?.Name - Section @Model.AssignedSection.Name</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary-subtle text-secondary">Subject Teacher (No Assigned Classroom)</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    @if (Model.AssignedSection != null)
+    {
+        <div class="mt-2 mt-md-0">
+            <a asp-controller="Attendance" asp-action="StudentAttendance" asp-route-classId="@Model.AssignedSection.ClassId" asp-route-sectionId="@Model.AssignedSection.Id" class="btn btn-success btn-sm px-3 fw-bold shadow-sm d-flex align-items-center gap-1">
+                <i class="bi bi-calendar-check-fill"></i> Take Today's Attendance
+            </a>
+        </div>
+    }
+</div>
+
+@if (Model.AssignedSection != null)
+{
+    <!-- Classroom KPI Summary -->
+    <div class="row g-2 mb-3">
+        <div class="col-sm-6 col-xl-3">
+            <div class="kpi-card kpi-blue py-2">
+                <div>
+                    <div class="kpi-title">Classroom Students</div>
+                    <div class="kpi-value">@Model.TotalStudents</div>
+                    <small class="text-white-50" style="font-size: 0.72rem;">Enrolled in @Model.AssignedSection.Name</small>
+                </div>
+                <div class="kpi-icon-wrapper">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="kpi-card kpi-green py-2">
+                <div>
+                    <div class="kpi-title">Present Today</div>
+                    <div class="kpi-value">@Model.TodayPresent</div>
+                    <small class="text-white fw-semibold" style="font-size: 0.72rem;">@Model.TodayAttendancePercentage% Attendance</small>
+                </div>
+                <div class="kpi-icon-wrapper">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="kpi-card kpi-red py-2">
+                <div>
+                    <div class="kpi-title">Absent Today</div>
+                    <div class="kpi-value">@Model.TodayAbsent</div>
+                    <small class="text-white-50" style="font-size: 0.72rem;">@Model.TodayLeave on leave</small>
+                </div>
+                <div class="kpi-icon-wrapper">
+                    <i class="bi bi-x-circle"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="kpi-card kpi-purple py-2">
+                <div>
+                    <div class="kpi-title">Attendance Status</div>
+                    <div class="kpi-value fs-5">@(Model.IsAttendanceMarkedToday ? "Marked" : "Pending")</div>
+                    <small class="text-white-50" style="font-size: 0.72rem;">@DateTime.Today.ToString("dd MMM yyyy")</small>
+                </div>
+                <div class="kpi-icon-wrapper">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Classroom Students Directory Table -->
+    <div class="row g-2">
+        <div class="col-lg-8">
+            <div class="card card-custom">
+                <div class="card-header-custom py-2 px-3 d-flex justify-content-between align-items-center">
+                    <span class="fw-bold small mb-0"><i class="bi bi-person-lines-fill text-primary me-1"></i>Enrolled Students in @Model.AssignedSection.Class?.Name - @Model.AssignedSection.Name</span>
+                    <a asp-controller="Attendance" asp-action="StudentAttendance" asp-route-classId="@Model.AssignedSection.ClassId" asp-route-sectionId="@Model.AssignedSection.Id" class="small text-decoration-none">
+                        Open Sheet &rarr;
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 70px;">Roll No</th>
+                                <th>Student Name</th>
+                                <th>Father's Name & Phone</th>
+                                <th>Address / Location</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Students.Any())
+                            {
+                                @foreach (var st in Model.Students)
+                                {
+                                    <tr>
+                                        <td class="fw-bold fs-6 text-primary">@st.RollNumber</td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="avatar-img avatar-sm bg-light border d-flex align-items-center justify-content-center fw-bold">
+                                                    @(st.Name.Substring(0, 1).ToUpper())
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold">@st.Name</div>
+                                                    <small class="text-muted" style="font-size: 0.7rem;">Adm: @st.AdmissionNumber</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold">@st.FatherName</div>
+                                            <small class="text-muted" style="font-size: 0.7rem;"><i class="bi bi-telephone me-1"></i>@st.FatherMobile</small>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted text-truncate d-block" style="max-width: 180px;">@st.Address, @st.City</small>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-3 text-muted">No students currently enrolled in your section.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Notices -->
+            <div class="card card-custom mb-2">
+                <div class="card-header-custom py-1 px-3">
+                    <span class="fw-bold small mb-0"><i class="bi bi-megaphone me-1 text-warning"></i>School Notices</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush small">
+                        @if (Model.RecentNotices.Any())
+                        {
+                            @foreach (var n in Model.RecentNotices)
+                            {
+                                <div class="list-group-item px-3 py-1.5">
+                                    <div class="fw-semibold text-truncate">@n.Title</div>
+                                    <small class="text-muted" style="font-size: 0.7rem;"><i class="bi bi-clock me-1"></i>@n.PublishDate.ToString("dd MMM yyyy")</small>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="p-2 text-center text-muted small">No notices posted.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Holidays -->
+            <div class="card card-custom">
+                <div class="card-header-custom py-1 px-3">
+                    <span class="fw-bold small mb-0"><i class="bi bi-calendar-heart me-1 text-danger"></i>Upcoming Holidays</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush small">
+                        @if (Model.UpcomingHolidays.Any())
+                        {
+                            @foreach (var h in Model.UpcomingHolidays)
+                            {
+                                <div class="list-group-item px-3 py-1.5 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold text-truncate" style="max-width: 170px;">@h.Name</div>
+                                        <small class="text-muted" style="font-size: 0.7rem;">@h.Description</small>
+                                    </div>
+                                    <span class="badge bg-danger-subtle text-danger" style="font-size: 0.7rem;">@h.HolidayDate.ToString("dd MMM")</span>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="p-2 text-center text-muted small">No upcoming holidays scheduled.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card card-custom p-4 text-center text-muted">
+        <i class="bi bi-person-workspace fs-1 text-secondary mb-2"></i>
+        <h5>No Assigned Classroom Yet</h5>
+        <p class="small mb-3">You are registered as a faculty member. The Data Entry Operator (DEO) or Principal will assign your classroom shortly.</p>
+        <a asp-controller="TeacherAttendance" asp-action="Index" class="btn btn-outline-primary btn-sm mx-auto">
+            <i class="bi bi-calendar-check me-1"></i> View My Personal Attendance Record
+        </a>
+    </div>
+}

@@ -1,0 +1,156 @@
+@model SchoolManagement.Models.School
+@{
+    ViewData["Title"] = $"{Model.Name} - Profile";
+}
+
+<!-- School Profile Header Card -->
+<div class="card card-custom p-4 mb-4">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-light p-2 rounded border" style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                @if (!string.IsNullOrEmpty(Model.Logo))
+                {
+                    <img src="@Model.Logo" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+                }
+                else
+                {
+                    <i class="bi bi-building fs-1 text-primary"></i>
+                }
+            </div>
+            <div>
+                <div class="d-flex align-items-center gap-2">
+                    <h3 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">@Model.Name</h3>
+                    <span class="badge bg-success-subtle text-success">@Model.Status</span>
+                </div>
+                <div class="text-muted small d-flex flex-wrap gap-3 mt-1">
+                    <span><i class="bi bi-upc-scan me-1"></i><strong>Code:</strong> @Model.Code</span>
+                    <span><i class="bi bi-award me-1"></i><strong>Reg No:</strong> @(Model.RegistrationNumber ?? "N/A")</span>
+                    <span><i class="bi bi-calendar-check me-1"></i><strong>Est:</strong> @Model.EstablishedYear</span>
+                    <span><i class="bi bi-geo-alt me-1"></i>@Model.Address, @Model.City, @Model.State - @Model.PinCode</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-pencil"></i>
+                <span>Edit Profile</span>
+            </a>
+            <a href="/School/Profile/@Model.Code" target="_blank" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm">
+                <i class="bi bi-globe"></i>
+                <span>Public Profile</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Vision, Mission & About Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card card-custom h-100 p-4 border-start border-4 border-primary">
+            <div class="d-flex align-items-center gap-2 mb-2 text-primary">
+                <i class="bi bi-eye-fill fs-4"></i>
+                <h5 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">OUR VISION</h5>
+            </div>
+            <p class="text-muted small mb-0" style="line-height: 1.6;">
+                @(Model.Vision ?? "To inspire every student with lifelong learning, ethical integrity, and global leadership skills.")
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-custom h-100 p-4 border-start border-4 border-success">
+            <div class="d-flex align-items-center gap-2 mb-2 text-success">
+                <i class="bi bi-compass-fill fs-4"></i>
+                <h5 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">OUR MISSION</h5>
+            </div>
+            <p class="text-muted small mb-0" style="line-height: 1.6;">
+                @(Model.Mission ?? "Empowering diverse minds through state-of-the-art educational practices, values, and holistic development.")
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-custom h-100 p-4 border-start border-4 border-info">
+            <div class="d-flex align-items-center gap-2 mb-2 text-info">
+                <i class="bi bi-info-circle-fill fs-4"></i>
+                <h5 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">ABOUT OUR SCHOOL</h5>
+            </div>
+            <p class="text-muted small mb-0" style="line-height: 1.6;">
+                @(Model.About ?? "A leading educational center cultivating academic brilliance, creative curiosity, and athletic mastery.")
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Principal Card & Contact Details -->
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card card-custom p-4 h-100">
+            <h5 class="fw-bold mb-3 border-bottom pb-2 text-primary"><i class="bi bi-person-badge-fill me-2"></i>Head of Institute / Principal</h5>
+            @if (Model.Principal != null)
+            {
+                <div class="d-flex gap-3 align-items-start mb-3">
+                    <div class="avatar-img avatar-xl bg-light border d-flex align-items-center justify-content-center overflow-hidden flex-shrink-0">
+                        @if (!string.IsNullOrEmpty(Model.Principal.Photo))
+                        {
+                            <img src="@Model.Principal.Photo" alt="Principal" style="width: 100%; height: 100%; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <i class="bi bi-person-fill fs-1 text-muted"></i>
+                        }
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-1">@Model.Principal.Name</h5>
+                        <div class="text-muted small mb-1"><strong>Qualification:</strong> @(Model.Principal.Qualification ?? "N/A")</div>
+                        <div class="text-muted small mb-1"><strong>Experience:</strong> @(Model.Principal.Experience ?? "N/A")</div>
+                        <div class="text-muted small"><strong>Email:</strong> @(Model.Principal.Email ?? Model.Email)</div>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Principal.Message))
+                {
+                    <div class="p-3 bg-light rounded border small text-muted fst-italic">
+                        <i class="bi bi-quote fs-5 text-primary me-1"></i>@Model.Principal.Message
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-muted py-4 text-center">No Principal details registered.</div>
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card card-custom p-4 h-100">
+            <h5 class="fw-bold mb-3 border-bottom pb-2 text-primary"><i class="bi bi-telephone-inbound-fill me-2"></i>Contact & Digital Presence</h5>
+            <dl class="row mb-0 small">
+                <dt class="col-sm-4 text-muted">Primary Phone:</dt>
+                <dd class="col-sm-8 fw-semibold">@Model.Phone</dd>
+
+                <dt class="col-sm-4 text-muted">Official Email:</dt>
+                <dd class="col-sm-8 fw-semibold">@Model.Email</dd>
+
+                <dt class="col-sm-4 text-muted">Website URL:</dt>
+                <dd class="col-sm-8">
+                    @if (!string.IsNullOrEmpty(Model.Website))
+                    {
+                        <a href="@Model.Website" target="_blank" class="text-decoration-none">@Model.Website</a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Not specified</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-4 text-muted">Address:</dt>
+                <dd class="col-sm-8">@Model.Address, @Model.City, @Model.State - @Model.PinCode</dd>
+
+                <dt class="col-sm-4 text-muted">Created Date:</dt>
+                <dd class="col-sm-8 text-muted">@Model.CreatedDate.ToString("dd MMM yyyy")</dd>
+            </dl>
+        </div>
+    </div>
+</div>

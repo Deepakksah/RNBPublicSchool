@@ -1,0 +1,53 @@
+@model SchoolManagement.Models.Holiday
+@{
+    ViewData["Title"] = "Add Holiday";
+}
+
+<div class="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-1">Add Calendar Holiday</h4>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back</a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-custom p-4">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-semibold small"></label>
+                    <input asp-for="Name" class="form-control" placeholder="e.g. Independence Day / Winter Vacation" required />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="AcademicYearId" class="form-label fw-semibold small">Academic Year</label>
+                    <select asp-for="AcademicYearId" asp-items="ViewBag.AcademicYears" class="form-select" required></select>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="HolidayDate" class="form-label fw-semibold small">Holiday Start Date</label>
+                        <input asp-for="HolidayDate" class="form-control" type="date" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="EndDate" class="form-label fw-semibold small">End Date (If Multi-Day)</label>
+                        <input asp-for="EndDate" class="form-control" type="date" />
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label fw-semibold small"></label>
+                    <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                    <i class="bi bi-check2-circle me-1"></i> Save Holiday
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

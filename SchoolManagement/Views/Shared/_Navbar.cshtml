@@ -1,0 +1,100 @@
+@inject SchoolManagement.Data.ApplicationDbContext DbContext
+@{
+    var isSuper = User.IsSuperAdmin();
+    var allSchools = isSuper ? DbContext.Schools.Where(s => s.IsActive).OrderBy(s => s.Name).ToList() : null;
+    var currentSchoolId = Context.Session.GetInt32("SelectedSchoolId") ?? User.GetSchoolId();
+    var currentSchool = currentSchoolId.HasValue ? DbContext.Schools.FirstOrDefault(s => s.Id == currentSchoolId.Value) : null;
+    var currentYear = currentSchoolId.HasValue ? DbContext.AcademicYears.FirstOrDefault(a => a.SchoolId == currentSchoolId.Value && a.IsCurrent && a.IsActive)?.Name ?? "2026-27" : "2026-27";
+}
+
+<nav class="app-navbar">
+    <div class="d-flex align-items-center gap-3">
+        <!-- Sidebar Toggle (Desktop & Mobile) -->
+        <button type="button" class="btn btn-light border d-flex align-items-center justify-content-center p-2 rounded-3 shadow-sm" id="sidebarToggle" aria-label="Toggle Sidebar" title="Collapse / Expand Left Panel">
+            <i class="bi bi-layout-sidebar-inset fs-5 text-dark"></i>
+        </button>
+
+        <!-- Multi-School Selector for Super Admin only -->
+        @if (isSuper && allSchools != null && allSchools.Any())
+        {
+            <form asp-controller="Dashboard" asp-action="SwitchSchool" method="post" class="d-flex align-items-center gap-2">
+                <i class="bi bi-buildings text-primary fs-5"></i>
+                <select name="selectedSchoolId" class="form-select form-select-sm shadow-sm" style="min-width: 220px;" onchange="this.form.submit()">
+                    <option value="">-- Super Admin Central --</option>
+                    @foreach (var sc in allSchools)
+                    {
+                        <!option value="@sc.Id" @(currentSchoolId == sc.Id ? "selected" : "")>@sc.Name</!option>
+                    }
+                </select>
+            </form>
+        }
+        else
+        {
+            <div class="d-flex align-items-center gap-2">
+                <span class="fw-bold text-dark fs-6" style="font-family: 'Outfit', sans-serif;">Dashboard Overview</span>
+                <span class="text-muted small d-none d-md-inline">• Session: <strong>@currentYear</strong></span>
+            </div>
+        }
+    </div>
+
+    <!-- Right Actions Unified In One Single Row -->
+    <div class="d-flex align-items-center gap-2">
+        <!-- Mark Attendance Button -->
+        <a asp-controller="Attendance" asp-action="StudentAttendance" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm px-3 fw-semibold">
+            <i class="bi bi-calendar-check"></i>
+            <span class="d-none d-sm-inline">Mark Attendance</span>
+        </a>
+
+        <!-- Quick Public View -->
+        @if (currentSchool != null)
+        {
+            <a href="/School/Profile/@currentSchool.Code" target="_blank" class="btn btn-sm btn-outline-secondary d-none d-md-flex align-items-center gap-1 shadow-sm" title="View Public Portal">
+                <i class="bi bi-globe2"></i>
+                <span>Public Portal</span>
+            </a>
+        }
+
+        <!-- Notifications -->
+        <a asp-controller="Notification" asp-action="Index" class="btn btn-light border position-relative p-2 rounded-circle ms-1" title="Notifications">
+            <i class="bi bi-bell text-secondary fs-6"></i>
+        </a>
+
+        <!-- User Profile Dropdown -->
+        <div class="dropdown ms-1">
+            <a href="#" class="d-flex align-items-center gap-2 text-decoration-none dropdown-toggle text-dark" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="avatar-img avatar-sm bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm">
+                    @(User.GetFullName().Substring(0, 1).ToUpper())
+                </div>
+                <div class="d-none d-lg-block text-start">
+                    <div class="fw-semibold small" style="line-height: 1.2;">@User.GetFullName()</div>
+                    <small class="text-muted" style="font-size: 0.72rem;">@(User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value ?? "User")</small>
+                </div>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
+                <li class="dropdown-header">Signed in as <br /><strong class="text-truncate d-block">@User.Identity?.Name</strong></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Account" asp-action="ChangePassword">
+                        <i class="bi bi-key"></i> Change Password
+                    </a>
+                </li>
+                @if (isSuper)
+                {
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Settings" asp-action="Index">
+                            <i class="bi bi-gear"></i> System Settings
+                        </a>
+                    </li>
+                }
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                        <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2">
+                            <i class="bi bi-box-arrow-right"></i> Sign Out
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

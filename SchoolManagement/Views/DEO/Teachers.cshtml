@@ -1,0 +1,241 @@
+@model SchoolManagement.ViewModels.DEOTeachersViewModel
+@{
+    ViewData["Title"] = "Faculty Directory & Teacher Login Desk";
+    var activeAccountsCount = Model.Teachers.Count(t => !string.IsNullOrEmpty(t.UserId));
+    var pendingAccountsCount = Model.Teachers.Count(t => string.IsNullOrEmpty(t.UserId));
+}
+
+<!-- Top Action Header & Tab Switcher -->
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-1.5 mb-2 border-bottom">
+    <div>
+        <div class="d-flex align-items-center gap-2">
+            <h5 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">Faculty Directory & Teacher Login Credentials Desk</h5>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Faculty Management</span>
+        </div>
+        <div class="text-muted small" style="font-size: 0.76rem;">Manage Faculty records, generate Teacher ERP login usernames & reset passwords</div>
+    </div>
+    <div class="d-flex flex-wrap gap-1.5 mt-2 mt-md-0">
+        <a asp-action="ClassTeachers" class="btn btn-outline-success btn-sm py-1 px-2.5 d-flex align-items-center gap-1 fw-semibold" style="font-size: 0.78rem;">
+            <i class="bi bi-diagram-3-fill"></i> 🏫 Class Teacher Allocation Desk
+        </a>
+        <form asp-action="GenerateAllTeacherAccounts" method="post" onsubmit="return confirm('Generate login accounts for all @pendingAccountsCount teachers with default password Teacher@123?');" class="d-inline">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-warning btn-sm py-1 px-2.5 d-flex align-items-center gap-1 fw-bold shadow-sm" style="font-size: 0.78rem;">
+                <i class="bi bi-key-fill"></i> ⚡ Auto-Generate All Teacher Logins
+            </button>
+        </form>
+        <a asp-controller="Teacher" asp-action="Create" class="btn btn-primary btn-sm py-1 px-2.5 d-flex align-items-center gap-1 fw-semibold shadow-sm" style="font-size: 0.78rem;">
+            <i class="bi bi-person-plus-fill"></i> + Add Teacher
+        </a>
+    </div>
+</div>
+
+<!-- Metrics Summary (Compact Rich Gradient Theme) -->
+<div class="row g-2 mb-2">
+    <div class="col-sm-4">
+        <div class="kpi-card kpi-blue py-1.5 px-3">
+            <div>
+                <div class="kpi-title" style="font-size: 0.7rem;">TOTAL FACULTY MEMBERS</div>
+                <div class="kpi-value" style="font-size: 1.35rem; line-height: 1.1;">@Model.TotalTeachers</div>
+                <small class="text-white-50" style="font-size: 0.68rem;">Active teaching staff</small>
+            </div>
+            <div class="kpi-icon-wrapper" style="width: 34px; height: 34px; font-size: 1.1rem;">
+                <i class="bi bi-person-badge"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="kpi-card kpi-green py-1.5 px-3">
+            <div>
+                <div class="kpi-title" style="font-size: 0.7rem;">LOGIN ACCOUNTS ACTIVE</div>
+                <div class="kpi-value" style="font-size: 1.35rem; line-height: 1.1;">@activeAccountsCount / @Model.TotalTeachers</div>
+                <small class="text-white fw-semibold" style="font-size: 0.68rem;">Can log into portal</small>
+            </div>
+            <div class="kpi-icon-wrapper" style="width: 34px; height: 34px; font-size: 1.1rem;">
+                <i class="bi bi-check2-circle"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="kpi-card @(pendingAccountsCount > 0 ? "kpi-amber" : "kpi-purple") py-1.5 px-3">
+            <div>
+                <div class="kpi-title" style="font-size: 0.7rem;">ACCOUNTS PENDING</div>
+                <div class="kpi-value" style="font-size: 1.35rem; line-height: 1.1;">@pendingAccountsCount</div>
+                <small class="text-white-50" style="font-size: 0.68rem;">Need login credentials</small>
+            </div>
+            <div class="kpi-icon-wrapper" style="width: 34px; height: 34px; font-size: 1.1rem;">
+                <i class="bi bi-key"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- All Faculty Directory & Account Creation Table -->
+<div class="card card-custom">
+    <div class="card-header-custom py-1.5 px-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+        <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold small mb-0"><i class="bi bi-person-badge-fill text-primary me-1"></i>All Faculty Members Directory & Login Credentials Desk</span>
+            <span class="badge bg-light text-dark border small" style="font-size: 0.72rem;">@Model.Teachers.Count Teachers</span>
+        </div>
+        <div class="input-group input-group-sm" style="max-width: 280px;">
+            <span class="input-group-text bg-white"><i class="bi bi-search text-primary"></i></span>
+            <input type="text" id="teacherDirectorySearchInput" class="form-control form-control-sm" placeholder="Search teacher by name, ID, subject..." autocomplete="off" />
+        </div>
+    </div>
+    <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+        <table class="table-custom mb-0" id="teacherDirectoryTable" style="font-size: 0.82rem;">
+            <thead class="sticky-top bg-white">
+                <tr>
+                    <th class="py-1">Teacher Name</th>
+                    <th class="py-1">Designation</th>
+                    <th class="py-1">Subject</th>
+                    <th class="py-1">Contact Info</th>
+                    <th class="py-1">Assigned Classroom</th>
+                    <th class="py-1">Login Account Status</th>
+                    <th class="text-end py-1">DEO Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in Model.Teachers)
+                {
+                    var assignedSection = Model.Sections.FirstOrDefault(s => s.ClassTeacherId == t.Id);
+                    var cleanFirst = t.Name.Split(' ').FirstOrDefault()?.ToLower() ?? "teacher";
+                    var defaultUser = $"teacher.{cleanFirst}";
+                    var hasAccount = !string.IsNullOrEmpty(t.UserId);
+                    var avatarSrc = !string.IsNullOrEmpty(t.Photo) 
+                        ? t.Photo 
+                        : (t.Gender == "Female" 
+                            ? ((t.Id % 2 == 0) ? "/images/avatars/teacher-f1.svg" : "/images/avatars/teacher-f2.svg")
+                            : ((t.Id % 2 == 0) ? "/images/avatars/teacher-m1.svg" : "/images/avatars/teacher-m2.svg"));
+
+                    <tr class="teacher-row">
+                        <td class="fw-bold py-1">
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="@avatarSrc" alt="@t.Name" class="avatar-img shadow-sm border border-2 border-primary-subtle rounded-circle flex-shrink-0" style="width: 32px; height: 32px; object-fit: cover;" onerror="this.src='/images/avatars/teacher-m1.svg'" />
+                                <div>
+                                    <a asp-controller="Teacher" asp-action="Details" asp-route-id="@t.Id" class="fw-bold text-dark text-decoration-none" style="font-size: 0.82rem;">
+                                        @t.Name
+                                    </a>
+                                    <small class="text-muted d-block" style="font-size: 0.68rem; line-height: 1;">ID: @t.EmployeeId</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-1">@t.Designation</td>
+                        <td class="py-1">@(t.Subject ?? "General")</td>
+                        <td class="py-1">
+                            <div><i class="bi bi-telephone text-muted me-1"></i>@t.Mobile</div>
+                            <small class="text-muted" style="font-size: 0.68rem;"><i class="bi bi-envelope me-1"></i>@t.Email</small>
+                        </td>
+                        <td class="py-1">
+                            @if (assignedSection != null)
+                            {
+                                <a asp-action="ClassTeachers" class="badge bg-primary-subtle text-primary border border-primary-subtle text-decoration-none" style="font-size: 0.7rem;" title="View Classroom Allocation">
+                                    <i class="bi bi-journal-check me-1"></i> @assignedSection.Class?.Name - Sec @assignedSection.Name
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted small" style="font-size: 0.7rem;">Subject Teacher</span>
+                            }
+                        </td>
+                        <td class="py-1">
+                            @if (hasAccount)
+                            {
+                                <span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-1.5" style="font-size: 0.7rem;">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Active Login
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle py-0.5 px-1.5" style="font-size: 0.7rem;">
+                                    <i class="bi bi-exclamation-circle-fill me-1"></i> No Account
+                                </span>
+                            }
+                        </td>
+                        <td class="text-end py-1">
+                            <button type="button" class="btn btn-sm @(hasAccount ? "btn-outline-primary" : "btn-warning fw-bold") py-0.5 px-2" style="font-size: 0.72rem;" data-bs-toggle="modal" data-bs-target="#loginModal_@t.Id">
+                                <i class="bi bi-key-fill me-1"></i> @(hasAccount ? "Reset / View" : "⚡ Create Login")
+                            </button>
+
+                            <!-- Account Creation / Reset Modal -->
+                            <div class="modal fade" id="loginModal_@t.Id" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered text-start">
+                                    <div class="modal-content">
+                                        <div class="modal-header py-2 px-3 bg-light">
+                                            <h6 class="modal-title fw-bold">
+                                                <i class="bi bi-person-lock text-primary me-1"></i> Teacher Login Control — @t.Name
+                                            </h6>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form asp-action="CreateTeacherAccount" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="teacherId" value="@t.Id" />
+                                            <div class="modal-body p-3">
+                                                <div class="alert alert-info py-2 px-3 small mb-3">
+                                                    <i class="bi bi-info-circle me-1"></i> DEO can create or reset login credentials for teacher <strong>@t.Name</strong>.
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small fw-bold">Username</label>
+                                                    <input type="text" name="customUsername" class="form-control form-control-sm" value="@defaultUser" required />
+                                                    <div class="form-text" style="font-size: 0.7rem;">Suggested: @defaultUser or employee ID</div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small fw-bold">Password</label>
+                                                    <input type="text" name="customPassword" class="form-control form-control-sm" value="Teacher@123" required />
+                                                    <div class="form-text" style="font-size: 0.7rem;">Default password: Teacher@123</div>
+                                                </div>
+                                                <div class="p-2 bg-light rounded border small text-muted">
+                                                    <div><strong>Assigned Role:</strong> Teacher</div>
+                                                    <div><strong>Access:</strong> Own Classroom Attendance & Student List Only</div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer py-2 px-3">
+                                                <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary btn-sm fw-bold">
+                                                    <i class="bi bi-check2-circle me-1"></i> Save & Generate Login
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#teacherDirectorySearchInput').on('input', function () {
+                var query = $(this).val().toLowerCase().trim();
+                var $rows = $('#teacherDirectoryTable tbody tr.teacher-row');
+                var matches = 0;
+
+                $rows.each(function () {
+                    var rowText = $(this).text().toLowerCase();
+                    if (query === '' || rowText.indexOf(query) !== -1) {
+                        $(this).show();
+                        matches++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                var $empty = $('#teacherNoMatchRow');
+                if (matches === 0 && query !== '') {
+                    if ($empty.length === 0) {
+                        $('#teacherDirectoryTable tbody').append('<tr id="teacherNoMatchRow"><td colspan="7" class="text-center py-4 text-muted"><i class="bi bi-search me-1"></i> No teachers matching "<strong>' + query + '</strong>"</td></tr>');
+                    } else {
+                        $empty.show().find('strong').text(query);
+                    }
+                } else if ($empty.length > 0) {
+                    $empty.hide();
+                }
+            });
+        });
+    </script>
+}

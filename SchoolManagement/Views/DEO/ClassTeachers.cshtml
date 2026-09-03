@@ -1,0 +1,193 @@
+@model SchoolManagement.ViewModels.DEOTeachersViewModel
+@{
+    ViewData["Title"] = "Class Teacher Classroom Allocation Desk";
+}
+
+<!-- Top Action Header & Tab Switcher -->
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-1.5 mb-2 border-bottom">
+    <div>
+        <div class="d-flex align-items-center gap-2">
+            <h5 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif;">Class Teacher Classroom Allocation Matrix</h5>
+            <span class="badge bg-success-subtle text-success border border-success-subtle">Allocation Desk</span>
+        </div>
+        <div class="text-muted small" style="font-size: 0.76rem;">Assign dedicated Class Teachers to each classroom • Teacher role restriction to assigned classroom</div>
+    </div>
+    <div class="d-flex flex-wrap gap-1.5 mt-2 mt-md-0">
+        <a asp-action="Teachers" class="btn btn-outline-primary btn-sm py-1 px-2.5 d-flex align-items-center gap-1 fw-semibold" style="font-size: 0.78rem;">
+            <i class="bi bi-people-fill"></i> 👥 Faculty Directory & Logins
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm py-1 px-2.5 d-flex align-items-center gap-1" style="font-size: 0.78rem;">
+            <i class="bi bi-person-lines-fill"></i> Student Desk
+        </a>
+        <a asp-action="Admission" class="btn btn-primary btn-sm py-1 px-2.5 d-flex align-items-center gap-1 fw-semibold shadow-sm" style="font-size: 0.78rem;">
+            <i class="bi bi-person-plus-fill"></i> New Admission
+        </a>
+    </div>
+</div>
+
+<!-- Metrics Summary (Compact Rich Gradient KPI Cards) -->
+<div class="row g-2 mb-2">
+    <div class="col-sm-4">
+        <div class="kpi-card kpi-blue py-1.5 px-3">
+            <div>
+                <div class="kpi-title" style="font-size: 0.7rem;">TOTAL CLASS SECTIONS</div>
+                <div class="kpi-value" style="font-size: 1.35rem; line-height: 1.1;">@Model.Sections.Count</div>
+                <small class="text-white-50" style="font-size: 0.68rem;">Active class sections</small>
+            </div>
+            <div class="kpi-icon-wrapper" style="width: 34px; height: 34px; font-size: 1.1rem;">
+                <i class="bi bi-building"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="kpi-card kpi-green py-1.5 px-3">
+            <div>
+                <div class="kpi-title" style="font-size: 0.7rem;">ASSIGNED CLASS TEACHERS</div>
+                <div class="kpi-value" style="font-size: 1.35rem; line-height: 1.1;">@Model.AssignedClassTeachersCount / @Model.Sections.Count</div>
+                <small class="text-white fw-semibold" style="font-size: 0.68rem;">Allocated classrooms</small>
+            </div>
+            <div class="kpi-icon-wrapper" style="width: 34px; height: 34px; font-size: 1.1rem;">
+                <i class="bi bi-person-check-fill"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="kpi-card kpi-purple py-1.5 px-3">
+            <div>
+                <div class="kpi-title" style="font-size: 0.7rem;">DEO ROLE ISOLATION</div>
+                <div class="kpi-value" style="font-size: 1.15rem; line-height: 1.2;">Active & Enforced</div>
+                <small class="text-white-50" style="font-size: 0.68rem;">Teachers limited to own class</small>
+            </div>
+            <div class="kpi-icon-wrapper" style="width: 34px; height: 34px; font-size: 1.1rem;">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Class Teacher Classroom Allocation Matrix -->
+<div class="card card-custom">
+    <div class="card-header-custom py-1.5 px-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+        <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold small mb-0"><i class="bi bi-diagram-3-fill text-primary me-1"></i>All Classroom Sections & Class Teacher Allocation Matrix</span>
+            <span class="badge bg-light text-dark border small" style="font-size: 0.72rem;">@Model.Sections.Count Class Sections</span>
+        </div>
+        <div class="input-group input-group-sm" style="max-width: 280px;">
+            <span class="input-group-text bg-white"><i class="bi bi-search text-primary"></i></span>
+            <input type="text" id="classAllocationSearchInput" class="form-control form-control-sm" placeholder="Search class or teacher..." autocomplete="off" />
+        </div>
+    </div>
+    <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+        <table class="table-custom mb-0" id="classAllocationTable" style="font-size: 0.82rem;">
+            <thead class="sticky-top bg-white">
+                <tr>
+                    <th class="py-1" style="width: 200px;">Class & Section</th>
+                    <th class="py-1" style="width: 140px;">Student Strength</th>
+                    <th class="py-1">Current Class Teacher</th>
+                    <th class="py-1" style="width: 380px;">Assign / Change Class Teacher</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sec in Model.Sections)
+                {
+                    <tr class="sec-row">
+                        <td class="fw-bold text-dark py-1">
+                            <span class="badge bg-light text-dark border px-2 py-0.5" style="font-size: 0.78rem;">
+                                <i class="bi bi-building me-1 text-primary"></i>@sec.Class?.Name - Section @sec.Name
+                            </span>
+                        </td>
+                        <td class="py-1">
+                            <span class="badge bg-info-subtle text-info fw-bold" style="font-size: 0.72rem;">
+                                @(sec.Students?.Count ?? 0) Students
+                            </span>
+                        </td>
+                        <td class="py-1">
+                            @if (sec.ClassTeacher != null)
+                            {
+                                var ct = sec.ClassTeacher;
+                                var avatarSrc = !string.IsNullOrEmpty(ct.Photo) 
+                                    ? ct.Photo 
+                                    : (ct.Gender == "Female" 
+                                        ? ((ct.Id % 2 == 0) ? "/images/avatars/teacher-f1.svg" : "/images/avatars/teacher-f2.svg")
+                                        : ((ct.Id % 2 == 0) ? "/images/avatars/teacher-m1.svg" : "/images/avatars/teacher-m2.svg"));
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="@avatarSrc" alt="@ct.Name" class="avatar-img shadow-sm border border-2 border-primary-subtle rounded-circle flex-shrink-0" style="width: 32px; height: 32px; object-fit: cover;" onerror="this.src='/images/avatars/teacher-m1.svg'" />
+                                    <div>
+                                        <a asp-controller="Teacher" asp-action="Details" asp-route-id="@ct.Id" class="fw-bold text-dark text-decoration-none" style="font-size: 0.82rem;">
+                                            @ct.Name
+                                        </a>
+                                        <small class="text-muted d-block" style="font-size: 0.68rem; line-height: 1;">@ct.Designation • @ct.Mobile</small>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center gap-1.5">
+                                    <div class="avatar-img avatar-sm bg-warning-subtle text-warning border border-warning-subtle d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; font-size: 0.8rem; border-radius: 50%;">
+                                        <i class="bi bi-person-x"></i>
+                                    </div>
+                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle" style="font-size: 0.7rem;">
+                                        No Teacher Assigned
+                                    </span>
+                                </div>
+                            }
+                        </td>
+                        <td class="py-1">
+                            <form asp-action="AssignClassTeacher" method="post" class="d-flex align-items-center gap-1.5 mb-0">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="sectionId" value="@sec.Id" />
+                                <input type="hidden" name="returnUrl" value="/DEO/ClassTeachers" />
+                                <select name="teacherId" class="form-select form-select-sm py-0.5" style="font-size: 0.78rem;">
+                                    <option value="">-- No Class Teacher --</option>
+                                    @foreach (var t in Model.Teachers)
+                                    {
+                                        <!option value="@t.Id" @(sec.ClassTeacherId == t.Id ? "selected" : "")>
+                                            @t.Name (@t.Designation)
+                                        </!option>
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-primary btn-sm py-0.5 px-2.5 fw-semibold text-nowrap" style="font-size: 0.76rem;">
+                                    <i class="bi bi-check2"></i> Assign
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#classAllocationSearchInput').on('input', function () {
+                var query = $(this).val().toLowerCase().trim();
+                var $rows = $('#classAllocationTable tbody tr.sec-row');
+                var matches = 0;
+
+                $rows.each(function () {
+                    var rowText = $(this).text().toLowerCase();
+                    if (query === '' || rowText.indexOf(query) !== -1) {
+                        $(this).show();
+                        matches++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                var $empty = $('#allocNoMatchRow');
+                if (matches === 0 && query !== '') {
+                    if ($empty.length === 0) {
+                        $('#classAllocationTable tbody').append('<tr id="allocNoMatchRow"><td colspan="4" class="text-center py-4 text-muted"><i class="bi bi-search me-1"></i> No classes or teachers matching "<strong>' + query + '</strong>"</td></tr>');
+                    } else {
+                        $empty.show().find('strong').text(query);
+                    }
+                } else if ($empty.length > 0) {
+                    $empty.hide();
+                }
+            });
+        });
+    </script>
+}

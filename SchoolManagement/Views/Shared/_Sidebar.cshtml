@@ -1,0 +1,192 @@
+@inject SchoolManagement.Data.ApplicationDbContext DbContext
+@{
+    var isSuper = User.IsSuperAdmin();
+    var isTeacher = User.IsTeacher();
+    var isSchoolAdmin = User.IsSchoolAdmin() || isSuper;
+    var currentCtrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var currentAct = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    var currentSchoolId = Context.Session.GetInt32("SelectedSchoolId") ?? User.GetSchoolId();
+    var currentSchool = currentSchoolId.HasValue ? DbContext.Schools.FirstOrDefault(s => s.Id == currentSchoolId.Value) : null;
+}
+
+<aside class="app-sidebar" id="appSidebar">
+    <!-- Brand & Logo -->
+    <a asp-controller="Dashboard" asp-action="Index" class="sidebar-brand d-flex align-items-center gap-2 text-decoration-none" title="R N B Public School ERP">
+        <div style="width: 38px; height: 38px; border-radius: 8px; overflow: hidden; background: #fff; padding: 2px; display: flex; align-items: center; justify-content: center;" class="shadow-sm flex-shrink-0">
+            <img src="/uploads/schools/rnb-logo.jpg" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='/images/rnb-logo.jpg'" />
+        </div>
+        <div class="sidebar-brand-text d-flex flex-column text-truncate text-start">
+            <span class="fw-bold text-white text-truncate" style="font-size: 0.95rem; font-family: 'Outfit', sans-serif;">@(currentSchool?.Name ?? "R N B Public School")</span>
+            <span class="text-white-50" style="font-size: 0.72rem;">@(isTeacher ? "Class Teacher Portal" : (currentSchool?.Code ?? "RNB-PIRO"))</span>
+        </div>
+    </a>
+
+    <!-- Navigation Menu -->
+    <div class="sidebar-menu">
+        @if (isTeacher)
+        {
+            <!-- TEACHER SCOPED WORKSPACE -->
+            <div class="sidebar-heading">My Classroom</div>
+            <a asp-controller="Dashboard" asp-action="Index" class="nav-link-custom @(currentCtrl == "Dashboard" ? "active" : "")" title="My Classroom">
+                <i class="bi bi-person-workspace text-primary"></i>
+                <span>My Classroom</span>
+            </a>
+            <a asp-controller="Attendance" asp-action="StudentAttendance" class="nav-link-custom @(currentCtrl == "Attendance" && currentAct == "StudentAttendance" ? "active" : "")" title="Take Class Attendance">
+                <i class="bi bi-calendar-check-fill text-success"></i>
+                <span>Take Attendance</span>
+            </a>
+            <a asp-controller="Student" asp-action="Index" class="nav-link-custom @(currentCtrl == "Student" ? "active" : "")" title="My Students">
+                <i class="bi bi-people-fill text-info"></i>
+                <span>My Students</span>
+            </a>
+
+            <div class="sidebar-heading">My Profile & Staff</div>
+            <a asp-controller="TeacherAttendance" asp-action="Index" class="nav-link-custom @(currentCtrl == "TeacherAttendance" ? "active" : "")" title="My Attendance Log">
+                <i class="bi bi-calendar-event-fill text-warning"></i>
+                <span>My Attendance Record</span>
+            </a>
+            <a asp-controller="Notification" asp-action="Index" class="nav-link-custom @(currentCtrl == "Notification" ? "active" : "")" title="Notices">
+                <i class="bi bi-megaphone-fill"></i>
+                <span>School Notices</span>
+            </a>
+            <a asp-controller="Holiday" asp-action="Index" class="nav-link-custom @(currentCtrl == "Holiday" ? "active" : "")" title="Holidays">
+                <i class="bi bi-calendar-heart-fill"></i>
+                <span>Holidays</span>
+            </a>
+        }
+        else
+        {
+            <!-- ADMIN & DEO FULL WORKSPACE -->
+            <div class="sidebar-heading">Main</div>
+            <a asp-controller="Dashboard" asp-action="Index" class="nav-link-custom @(currentCtrl == "Dashboard" ? "active" : "")" title="Dashboard">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+            @if (isSuper)
+            {
+                <div class="sidebar-heading">Multi-School</div>
+                <a asp-controller="School" asp-action="Index" class="nav-link-custom @(currentCtrl == "School" && currentAct == "Index" ? "active" : "")" title="All Schools">
+                    <i class="bi bi-buildings"></i>
+                    <span>All Schools</span>
+                </a>
+                <a asp-controller="School" asp-action="Availability" class="nav-link-custom @(currentCtrl == "School" && currentAct == "Availability" ? "active" : "")" title="Availability Status">
+                    <i class="bi bi-activity"></i>
+                    <span>Availability Status</span>
+                </a>
+            }
+
+            <div class="sidebar-heading">Academics & Operations</div>
+            <a asp-controller="DEO" asp-action="Index" class="nav-link-custom @(currentCtrl == "DEO" && currentAct == "Index" ? "active" : "")" title="DEO Admission Desk">
+                <i class="bi bi-person-lines-fill text-warning"></i>
+                <span>DEO Admission Desk</span>
+            </a>
+            <a asp-controller="DEO" asp-action="Teachers" class="nav-link-custom @(currentCtrl == "DEO" && currentAct == "Teachers" ? "active" : "")" title="Faculty & Teacher Logins">
+                <i class="bi bi-person-badge-fill text-info"></i>
+                <span>Faculty & Logins</span>
+            </a>
+            <a asp-controller="DEO" asp-action="ClassTeachers" class="nav-link-custom @(currentCtrl == "DEO" && currentAct == "ClassTeachers" ? "active" : "")" title="Class Teacher Allocation">
+                <i class="bi bi-diagram-3-fill text-success"></i>
+                <span>Class Teacher Allocation</span>
+            </a>
+            <a asp-controller="Student" asp-action="Index" class="nav-link-custom @(currentCtrl == "Student" ? "active" : "")" title="Students">
+                <i class="bi bi-people-fill"></i>
+                <span>Students</span>
+            </a>
+            <a asp-controller="Teacher" asp-action="Index" class="nav-link-custom @(currentCtrl == "Teacher" ? "active" : "")" title="Teachers">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>Teachers</span>
+            </a>
+            <a asp-controller="Class" asp-action="Index" class="nav-link-custom @(currentCtrl == "Class" || currentCtrl == "Section" ? "active" : "")" title="Classes & Sections">
+                <i class="bi bi-journal-bookmark-fill"></i>
+                <span>Classes & Sections</span>
+            </a>
+
+            <div class="sidebar-heading">Attendance</div>
+            <a asp-controller="Attendance" asp-action="StudentAttendance" class="nav-link-custom @(currentCtrl == "Attendance" && currentAct == "StudentAttendance" ? "active" : "")" title="Student Attendance">
+                <i class="bi bi-calendar-check-fill"></i>
+                <span>Student Attendance</span>
+            </a>
+            <a asp-controller="TeacherAttendance" asp-action="Index" class="nav-link-custom @(currentCtrl == "TeacherAttendance" ? "active" : "")" title="Teacher Attendance">
+                <i class="bi bi-calendar-event-fill"></i>
+                <span>Teacher Attendance</span>
+            </a>
+            <a asp-controller="Attendance" asp-action="DailyReport" class="nav-link-custom @(currentCtrl == "Attendance" && currentAct == "DailyReport" ? "active" : "")" title="Daily School Status">
+                <i class="bi bi-clipboard-data-fill"></i>
+                <span>Daily School Status</span>
+            </a>
+            <a asp-controller="Attendance" asp-action="Analytics" class="nav-link-custom @(currentCtrl == "Attendance" && currentAct == "Analytics" ? "active" : "")" title="Attendance Analytics">
+                <i class="bi bi-graph-up-arrow"></i>
+                <span>Attendance Analytics</span>
+            </a>
+
+            <div class="sidebar-heading">Reports</div>
+            <a asp-controller="Reports" asp-action="StudentAttendance" class="nav-link-custom @(currentCtrl == "Reports" && currentAct == "StudentAttendance" ? "active" : "")" title="Student Report">
+                <i class="bi bi-file-earmark-bar-graph"></i>
+                <span>Student Report</span>
+            </a>
+            <a asp-controller="Reports" asp-action="TeacherAttendance" class="nav-link-custom @(currentCtrl == "Reports" && currentAct == "TeacherAttendance" ? "active" : "")" title="Teacher Report">
+                <i class="bi bi-file-earmark-person"></i>
+                <span>Teacher Report</span>
+            </a>
+            <a asp-controller="Reports" asp-action="ClassAttendance" class="nav-link-custom @(currentCtrl == "Reports" && currentAct == "ClassAttendance" ? "active" : "")" title="Class Report">
+                <i class="bi bi-file-earmark-spreadsheet"></i>
+                <span>Class Report</span>
+            </a>
+            <a asp-controller="Reports" asp-action="SchoolSummary" class="nav-link-custom @(currentCtrl == "Reports" && currentAct == "SchoolSummary" ? "active" : "")" title="School Summary">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>School Summary</span>
+            </a>
+
+            <div class="sidebar-heading">School Portal</div>
+            <a asp-controller="School" asp-action="Details" class="nav-link-custom @(currentCtrl == "School" && currentAct == "Details" ? "active" : "")" title="School Profile">
+                <i class="bi bi-info-circle-fill"></i>
+                <span>School Profile</span>
+            </a>
+            <a asp-controller="Gallery" asp-action="Index" class="nav-link-custom @(currentCtrl == "Gallery" ? "active" : "")" title="School Gallery">
+                <i class="bi bi-images"></i>
+                <span>School Gallery</span>
+            </a>
+            <a asp-controller="Notification" asp-action="Index" class="nav-link-custom @(currentCtrl == "Notification" ? "active" : "")" title="Notifications">
+                <i class="bi bi-megaphone-fill"></i>
+                <span>Notifications</span>
+            </a>
+            <a asp-controller="Holiday" asp-action="Index" class="nav-link-custom @(currentCtrl == "Holiday" ? "active" : "")" title="Holidays">
+                <i class="bi bi-calendar-heart-fill"></i>
+                <span>Holidays</span>
+            </a>
+            <a asp-controller="AcademicYear" asp-action="Index" class="nav-link-custom @(currentCtrl == "AcademicYear" ? "active" : "")" title="Academic Years">
+                <i class="bi bi-calendar3"></i>
+                <span>Academic Years</span>
+            </a>
+
+            @if (isSchoolAdmin)
+            {
+                <div class="sidebar-heading">Administration</div>
+                <a asp-controller="User" asp-action="Index" class="nav-link-custom @(currentCtrl == "User" ? "active" : "")" title="Users & Roles">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span>Users & Roles</span>
+                </a>
+                <a asp-controller="Audit" asp-action="Index" class="nav-link-custom @(currentCtrl == "Audit" ? "active" : "")" title="Audit Logs">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    <span>Audit Logs</span>
+                </a>
+                <a asp-controller="Settings" asp-action="Index" class="nav-link-custom @(currentCtrl == "Settings" ? "active" : "")" title="Settings">
+                    <i class="bi bi-sliders"></i>
+                    <span>Settings</span>
+                </a>
+            }
+        }
+    </div>
+
+    <!-- User Mini Profile & Logout -->
+    <div class="sidebar-user-footer p-3 border-top border-secondary border-opacity-25 mt-auto">
+        <form asp-controller="Account" asp-action="Logout" method="post" class="w-100">
+            <button type="submit" class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2" title="Sign Out">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+            </button>
+        </form>
+    </div>
+</aside>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>

@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="text-center py-5">
+    <div class="display-1 text-danger mb-3"><i class="bi bi-shield-slash-fill"></i></div>
+    <h2 class="fw-bold">Access Denied (403)</h2>
+    <p class="text-muted">You do not have permission to access the requested school resource.</p>
+    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary mt-3">
+        <i class="bi bi-house-door me-1"></i> Return to Dashboard
+    </a>
+</div>

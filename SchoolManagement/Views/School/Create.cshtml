@@ -1,0 +1,169 @@
+@model SchoolManagement.ViewModels.SchoolCreateEditViewModel
+@{
+    ViewData["Title"] = "Register New School";
+}
+
+<div class="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-1">Register New School</h4>
+        <p class="text-muted small mb-0">Add a new institute to the multi-school network</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to List
+    </a>
+</div>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-3"></div>
+
+    <div class="row g-4">
+        <!-- School Basic Info -->
+        <div class="col-lg-8">
+            <div class="card card-custom p-4 mb-4">
+                <h5 class="fw-bold mb-3 border-bottom pb-2 text-primary"><i class="bi bi-building me-2"></i>School Identity & Registration</h5>
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label asp-for="Name" class="form-label fw-semibold small"></label>
+                        <input asp-for="Name" class="form-control" placeholder="e.g. Cambridge International School" required />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Code" class="form-label fw-semibold small"></label>
+                        <input asp-for="Code" class="form-control text-uppercase" placeholder="e.g. CIS-01" required />
+                        <span asp-validation-for="Code" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="RegistrationNumber" class="form-label fw-semibold small"></label>
+                        <input asp-for="RegistrationNumber" class="form-control" placeholder="e.g. CBSE/REG/2026/890" />
+                        <span asp-validation-for="RegistrationNumber" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="EstablishedYear" class="form-label fw-semibold small"></label>
+                        <input asp-for="EstablishedYear" class="form-control" type="number" />
+                        <span asp-validation-for="EstablishedYear" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="LogoFile" class="form-label fw-semibold small"></label>
+                        <input asp-for="LogoFile" type="file" class="form-control" accept="image/*" />
+                        <span asp-validation-for="LogoFile" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="BannerFile" class="form-label fw-semibold small"></label>
+                        <input asp-for="BannerFile" type="file" class="form-control" accept="image/*" />
+                        <span asp-validation-for="BannerFile" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <h5 class="fw-bold my-4 border-bottom pb-2 text-primary"><i class="bi bi-geo-alt me-2"></i>Contact & Location</h5>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="Address" class="form-label fw-semibold small"></label>
+                        <input asp-for="Address" class="form-control" placeholder="Street / Campus address" required />
+                        <span asp-validation-for="Address" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="City" class="form-label fw-semibold small"></label>
+                        <input asp-for="City" class="form-control" required />
+                        <span asp-validation-for="City" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="State" class="form-label fw-semibold small"></label>
+                        <input asp-for="State" class="form-control" required />
+                        <span asp-validation-for="State" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="PinCode" class="form-label fw-semibold small"></label>
+                        <input asp-for="PinCode" class="form-control" required />
+                        <span asp-validation-for="PinCode" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Phone" class="form-label fw-semibold small"></label>
+                        <input asp-for="Phone" class="form-control" required />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Email" class="form-label fw-semibold small"></label>
+                        <input asp-for="Email" class="form-control" required />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Website" class="form-label fw-semibold small"></label>
+                        <input asp-for="Website" class="form-control" placeholder="https://" />
+                        <span asp-validation-for="Website" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <h5 class="fw-bold my-4 border-bottom pb-2 text-primary"><i class="bi bi-card-text me-2"></i>Vision & Philosophy</h5>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="About" class="form-label fw-semibold small"></label>
+                        <textarea asp-for="About" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Vision" class="form-label fw-semibold small"></label>
+                        <textarea asp-for="Vision" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Mission" class="form-label fw-semibold small"></label>
+                        <textarea asp-for="Mission" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Principal Section & Actions -->
+        <div class="col-lg-4">
+            <div class="card card-custom p-4 mb-4">
+                <h5 class="fw-bold mb-3 border-bottom pb-2 text-primary"><i class="bi bi-person-workspace me-2"></i>Head of Institute</h5>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="PrincipalName" class="form-label fw-semibold small"></label>
+                        <input asp-for="PrincipalName" class="form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="PrincipalPhotoFile" class="form-label fw-semibold small"></label>
+                        <input asp-for="PrincipalPhotoFile" type="file" class="form-control" accept="image/*" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="PrincipalQualification" class="form-label fw-semibold small"></label>
+                        <input asp-for="PrincipalQualification" class="form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="PrincipalExperience" class="form-label fw-semibold small"></label>
+                        <input asp-for="PrincipalExperience" class="form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="PrincipalPhone" class="form-label fw-semibold small"></label>
+                        <input asp-for="PrincipalPhone" class="form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="PrincipalEmail" class="form-label fw-semibold small"></label>
+                        <input asp-for="PrincipalEmail" class="form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="PrincipalMessage" class="form-label fw-semibold small"></label>
+                        <textarea asp-for="PrincipalMessage" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-custom p-4">
+                <label asp-for="Status" class="form-label fw-semibold small">Operational Status</label>
+                <select asp-for="Status" class="form-select mb-4">
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                    <option value="3">Suspended</option>
+                    <option value="4">Under Maintenance</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm">
+                    <i class="bi bi-check2-circle me-1"></i> Register School
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

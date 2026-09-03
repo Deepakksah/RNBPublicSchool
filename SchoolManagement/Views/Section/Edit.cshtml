@@ -1,0 +1,56 @@
+@model SchoolManagement.ViewModels.SectionCreateEditViewModel
+@{
+    ViewData["Title"] = $"Edit Section {Model.Name}";
+}
+
+<div class="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-1">Edit Section</h4>
+    </div>
+    <a asp-controller="Class" asp-action="Index" class="btn btn-outline-secondary btn-sm">Back</a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-custom p-4">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="SchoolId" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="ClassId" class="form-label fw-semibold small"></label>
+                    <select asp-for="ClassId" asp-items="Model.Classes" class="form-select" required></select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-semibold small"></label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RoomNumber" class="form-label fw-semibold small"></label>
+                    <input asp-for="RoomNumber" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Capacity" class="form-label fw-semibold small"></label>
+                    <input asp-for="Capacity" class="form-control" type="number" min="1" required />
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="ClassTeacherId" class="form-label fw-semibold small"></label>
+                    <select asp-for="ClassTeacherId" asp-items="Model.Teachers" class="form-select">
+                        <option value="">-- None / Select Teacher --</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                    <i class="bi bi-save me-1"></i> Update Section
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

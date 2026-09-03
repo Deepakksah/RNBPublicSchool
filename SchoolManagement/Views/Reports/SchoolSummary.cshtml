@@ -1,0 +1,126 @@
+@model SchoolManagement.ViewModels.SchoolSummaryReportViewModel
+@{
+    ViewData["Title"] = $"{Model.School.Name} - Comprehensive School Report";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-4 border-bottom no-print">
+    <div>
+        <h4 class="fw-bold mb-1">Cumulative School Summary Report</h4>
+        <p class="text-muted small mb-0">Demographics, strength, and overall attendance performance</p>
+    </div>
+    <div class="d-flex gap-2 mt-3 mt-md-0">
+        <form method="get" class="d-flex gap-2">
+            <select name="academicYearId" asp-items="ViewBag.AcademicYears" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="">-- Active Academic Year --</option>
+            </select>
+        </form>
+        <button onclick="window.print()" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm">
+            <i class="bi bi-printer"></i> Print Summary
+        </button>
+    </div>
+</div>
+
+<!-- Print Header -->
+<div class="print-header">
+    <h2>@Model.School.Name</h2>
+    <h4>Comprehensive Institutional Audit & Performance Summary</h4>
+    <p>Academic Year: @(Model.AcademicYear?.Name ?? "2026-27") | Generated on @Model.GeneratedDate.ToString("dd MMMM yyyy")</p>
+</div>
+
+<!-- Demographic KPI Grid -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-blue">
+            <div>
+                <div class="kpi-title">Student Strength</div>
+                <div class="kpi-value">@Model.TotalStudents</div>
+                <small class="text-muted">@Model.TotalMaleStudents Boys / @Model.TotalFemaleStudents Girls</small>
+            </div>
+            <div class="kpi-icon-wrapper"><i class="bi bi-mortarboard-fill"></i></div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-purple">
+            <div>
+                <div class="kpi-title">Faculty Strength</div>
+                <div class="kpi-value">@Model.TotalTeachers</div>
+                <small class="text-muted">@Model.TotalMaleTeachers Male / @Model.TotalFemaleTeachers Female</small>
+            </div>
+            <div class="kpi-icon-wrapper"><i class="bi bi-person-badge-fill"></i></div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-green">
+            <div>
+                <div class="kpi-title">Student Attendance Rate</div>
+                <div class="kpi-value">@Model.OverallStudentAttendanceRate%</div>
+                <small class="text-success fw-bold">Overall Average</small>
+            </div>
+            <div class="kpi-icon-wrapper"><i class="bi bi-check2-circle"></i></div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-cyan">
+            <div>
+                <div class="kpi-title">Active Classes</div>
+                <div class="kpi-value">@Model.TotalClasses</div>
+                <small class="text-muted">@Model.TotalSections Total Sections</small>
+            </div>
+            <div class="kpi-icon-wrapper"><i class="bi bi-journal-bookmark"></i></div>
+        </div>
+    </div>
+</div>
+
+<!-- Class Breakdown Table -->
+<div class="card card-custom mb-4">
+    <div class="card-header-custom">
+        <h6 class="fw-bold mb-0"><i class="bi bi-grid me-2 text-primary"></i>Grade & Section Performance Distribution</h6>
+    </div>
+    <div class="table-responsive">
+        <table class="table-custom mb-0">
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Section</th>
+                    <th>Class Teacher</th>
+                    <th>Students</th>
+                    <th>Present Count</th>
+                    <th>Absent Count</th>
+                    <th>Attendance %</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.ClassSummaries)
+                {
+                    <tr>
+                        <td class="fw-bold">@c.ClassName</td>
+                        <td>Section @c.SectionName</td>
+                        <td>@(c.ClassTeacherName ?? "Not Assigned")</td>
+                        <td>@c.TotalStudents</td>
+                        <td><span class="badge bg-success-subtle text-success">@c.TotalPresent</span></td>
+                        <td><span class="badge bg-danger-subtle text-danger">@c.TotalAbsent</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="height: 6px; width: 60px;">
+                                    <div class="progress-bar bg-primary" style="width: @c.AverageAttendanceRate%"></div>
+                                </div>
+                                <span class="fw-bold small">@c.AverageAttendanceRate%</span>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="print-footer-signatures">
+    <div>
+        ____________________________<br />
+        Principal Signature
+    </div>
+    <div>
+        ____________________________<br />
+        Governing Board Official Seal
+    </div>
+</div>

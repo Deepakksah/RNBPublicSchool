@@ -1,0 +1,73 @@
+@model SchoolManagement.Models.Notification
+@{
+    ViewData["Title"] = "Publish Notice";
+}
+
+<div class="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h4 class="fw-bold mb-1">Publish Notice or Circular</h4>
+        <p class="text-muted small mb-0">Broadcast announcement to selected audience</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back</a>
+</div>
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="card card-custom p-4">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label fw-semibold small"></label>
+                    <input asp-for="Title" class="form-control" placeholder="Notice heading..." required />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="Type" class="form-label fw-semibold small">Category</label>
+                        <select asp-for="Type" class="form-select">
+                            <option value="1">General</option>
+                            <option value="2">Attendance Alert</option>
+                            <option value="3">Holiday Circular</option>
+                            <option value="4">Event Announcement</option>
+                            <option value="5">Emergency Alert</option>
+                            <option value="6">School Notice</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Audience" class="form-label fw-semibold small">Target Audience</label>
+                        <select asp-for="Audience" class="form-select">
+                            <option value="1">All (Everyone)</option>
+                            <option value="2">Teachers Only</option>
+                            <option value="3">Students Only</option>
+                            <option value="4">Parents Only</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fw-semibold small">Full Notice Content</label>
+                    <textarea asp-for="Description" class="form-control" rows="4" required></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label asp-for="PublishDate" class="form-label fw-semibold small">Publish Date</label>
+                        <input asp-for="PublishDate" class="form-control" type="date" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ExpiryDate" class="form-label fw-semibold small">Expiry Date (Optional)</label>
+                        <input asp-for="ExpiryDate" class="form-control" type="date" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                    <i class="bi bi-send-fill me-1"></i> Publish Announcement
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

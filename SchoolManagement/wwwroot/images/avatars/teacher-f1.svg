@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="bg_f1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#831843"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="50" fill="url(#bg_f1)"/>
+  <!-- Head -->
+  <circle cx="50" cy="40" r="18" fill="#fed7aa"/>
+  <!-- Hair -->
+  <path d="M 28 42 C 28 20 72 20 72 42 C 75 56 68 62 68 62 C 64 45 66 32 50 30 C 34 32 36 45 32 62 C 32 62 25 56 28 42 Z" fill="#312e81"/>
+  <!-- Bindi / Eyes -->
+  <circle cx="50" cy="34" r="1.5" fill="#e11d48"/>
+  <circle cx="43" cy="39" r="2" fill="#1e293b"/>
+  <circle cx="57" cy="39" r="2" fill="#1e293b"/>
+  <!-- Smile -->
+  <path d="M 45 47 Q 50 52 55 47" fill="none" stroke="#be123c" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- Saree/Dress -->
+  <path d="M 24 95 C 24 70 35 62 50 62 C 65 62 76 70 76 95 Z" fill="#fbbf24"/>
+  <path d="M 32 68 Q 48 80 62 95" fill="none" stroke="#be185d" stroke-width="6"/>
+</svg>
