@@ -47,7 +47,9 @@
     <meta name="twitter:image" content="https://rnbpublicschool.com/uploads/schools/rnb-logo.jpg" />
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
@@ -68,7 +70,7 @@
       "email": "info@rnbpublicschool.com",
       "address": {
         "@@type": "PostalAddress",
-        "streetAddress": "Station Road, Piro",
+        "streetAddress": "Station Road, 8CM3+PH4",
         "addressLocality": "Piro",
         "addressRegion": "Bihar",
         "postalCode": "802207",
@@ -86,371 +88,912 @@
           "opens": "07:30",
           "closes": "14:00"
         }
-      ],
-      "hasOfferCatalog": {
-        "@@type": "OfferCatalog",
-        "name": "Academic Curriculum",
-        "itemListElement": [
-          { "@@type": "Offer", "itemOffered": { "@@type": "Service", "name": "Pre-Primary Wing (Nursery, LKG, UKG)" } },
-          { "@@type": "Offer", "itemOffered": { "@@type": "Service", "name": "Primary & Middle School (Class 1 to 8)" } },
-          { "@@type": "Offer", "itemOffered": { "@@type": "Service", "name": "Secondary School (Class 9 & 10)" } }
-        ]
-      }
-    }
-    </script>
-
-    <!-- Schema.org FAQPage Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@@context": "https://schema.org",
-      "@@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@@type": "Question",
-          "name": "What is the admission procedure at R N B Public School, Piro?",
-          "acceptedAnswer": {
-            "@@type": "Answer",
-            "text": "Parents can apply online through the official Online Admission portal or visit the school admission desk on Station Road, Piro with child's Birth Certificate and Aadhaar card."
-          }
-        },
-        {
-          "@@type": "Question",
-          "name": "Which classes are offered at R N B Public School?",
-          "acceptedAnswer": {
-            "@@type": "Answer",
-            "text": "R N B Public School offers education from Nursery, LKG, UKG up to Class 10 with CBSE aligned curriculum, smart classes, science lab, computer lab, and library."
-          }
-        },
-        {
-          "@@type": "Question",
-          "name": "What are the school office hours?",
-          "acceptedAnswer": {
-            "@@type": "Answer",
-            "text": "The school office is open Monday to Saturday from 7:30 AM to 2:00 PM. Helpline: +91 94708 35418."
-          }
-        }
       ]
     }
     </script>
+
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; color: #1e293b; background-color: #f8fafc; }
-        h1, h2, h3, h4, h5, .brand-font { font-family: 'Outfit', sans-serif; }
-        .hero-banner {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 58, 138, 0.88)), url('/uploads/schools/rnb-logo.jpg');
-            background-size: cover;
-            background-position: center;
+        :root {
+            --brand-navy: #0f172a;
+            --brand-blue: #1e40af;
+            --brand-accent: #2563eb;
+            --brand-gold: #f59e0b;
+            --brand-gold-glow: #fbbf24;
+            --brand-green: #10b981;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #334155;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6, .brand-font {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* Top Announcement Header */
+        .top-bar {
+            background: #090d16;
+            color: #cbd5e1;
+            font-size: 0.8rem;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /* Sticky Glass Navbar */
+        .glass-navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: #475569 !important;
+            padding: 0.5rem 0.85rem !important;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--brand-accent) !important;
+        }
+
+        /* Premium Hero Section */
+        .hero-section {
+            position: relative;
+            background: linear-gradient(135deg, #0b1329 0%, #172554 50%, #1e3a8a 100%);
             color: #ffffff;
-            padding: 5rem 1rem 4rem;
+            padding: 5rem 0 6.5rem;
+            overflow: hidden;
         }
-        .stat-badge-card {
+
+        .hero-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.6;
+        }
+
+        .hero-glow-1 {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            top: -100px;
+            left: -100px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+
+        .hero-glow-2 {
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            bottom: -50px;
+            right: -50px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+
+        .school-emblem-badge {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
             background: #ffffff;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);
-            text-align: center;
-            border: 1px solid #e2e8f0;
-            margin-top: -3rem;
-        }
-        .feature-icon-circle {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            display: flex;
+            padding: 5px;
+            box-shadow: 0 0 35px rgba(245, 158, 11, 0.45);
+            border: 3px solid #fbbf24;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            transition: transform 0.4s ease;
         }
-        .gallery-card img {
-            height: 200px;
-            object-fit: cover;
-            border-radius: 0.75rem;
-            transition: transform 0.3s ease;
+
+        .school-emblem-badge:hover {
+            transform: scale(1.05) rotate(3deg);
         }
-        .gallery-card:hover img {
-            transform: scale(1.03);
-        }
-        .school-hero-img-box {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: #fff;
-            padding: 4px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            margin: 0 auto 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .school-hero-img-box img {
+
+        .school-emblem-badge img {
             width: 100%;
             height: 100%;
             object-fit: contain;
             border-radius: 50%;
         }
+
+        /* Floating KPI Stats Bar */
+        .stats-floating-container {
+            margin-top: -3.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .stats-card {
+            background: #ffffff;
+            border-radius: 1.25rem;
+            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12);
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem 1rem;
+        }
+
+        .stat-item {
+            border-right: 1px solid #f1f5f9;
+        }
+        .stat-item:last-child {
+            border-right: none;
+        }
+
+        /* Section Titles */
+        .section-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.35rem 0.85rem;
+            border-radius: 50rem;
+            margin-bottom: 0.65rem;
+        }
+
+        /* Modern Feature Cards */
+        .facility-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .facility-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -10px rgba(37, 99, 235, 0.15);
+            border-color: #cbd5e1;
+        }
+
+        .facility-icon-wrap {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Academic Wings */
+        .wing-card {
+            background: #ffffff;
+            border-radius: 1.25rem;
+            padding: 2rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+
+        .wing-card.wing-1::before { background: #3b82f6; }
+        .wing-card.wing-2::before { background: #10b981; }
+        .wing-card.wing-3::before { background: #f59e0b; }
+
+        .wing-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.08);
+        }
+
+        /* Gallery Filter & Cards */
+        .gallery-filter-btn {
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #64748b;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.45rem 1rem;
+            border-radius: 50rem;
+            transition: all 0.2s ease;
+        }
+
+        .gallery-filter-btn:hover, .gallery-filter-btn.active {
+            background: var(--brand-accent);
+            color: #ffffff;
+            border-color: var(--brand-accent);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .gallery-item-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            transition: all 0.35s ease;
+            position: relative;
+        }
+
+        .gallery-item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -8px rgba(15, 23, 42, 0.15);
+        }
+
+        .gallery-img-container {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+            background: #f1f5f9;
+        }
+
+        .gallery-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item-card:hover .gallery-img-container img {
+            transform: scale(1.08);
+        }
+
+        /* Principal Quote Card */
+        .principal-desk-card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 15px 35px -10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        /* Floating Quick Contact on Mobile */
+        .floating-mobile-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.12);
+            z-index: 1000;
+            padding: 0.6rem 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
     </style>
 </head>
 <body>
-    <!-- Top Nav -->
-    <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3">
+
+    <!-- TOP ANNOUNCEMENT & CONTACT BAR -->
+    <div class="top-bar d-none d-md-block">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-4">
+                <span>
+                    <i class="bi bi-geo-alt-fill text-warning me-1"></i> Station Road, Piro, Bhojpur (Bihar) 802207
+                </span>
+                <span>
+                    <i class="bi bi-clock-fill text-info me-1"></i> Mon - Sat: 07:30 AM - 02:00 PM
+                </span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="tel:+919470835418" class="text-light text-decoration-none fw-semibold">
+                    <i class="bi bi-telephone-fill text-success me-1"></i> +91 94708 35418
+                </a>
+                <span class="text-white-50">|</span>
+                <a href="https://www.instagram.com/rnbpublicschoolpiro/" target="_blank" class="text-light text-decoration-none" title="Follow us on Instagram">
+                    <i class="bi bi-instagram text-danger"></i>
+                </a>
+                <a href="https://www.facebook.com/RNBPublicSchool/" target="_blank" class="text-light text-decoration-none" title="Follow us on Facebook">
+                    <i class="bi bi-facebook text-primary"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN NAVIGATION BAR -->
+    <nav class="navbar navbar-expand-lg glass-navbar sticky-top py-2.5">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-3" href="#">
-                <img src="/uploads/schools/rnb-logo.jpg" alt="Logo" style="height: 48px; width: 48px; object-fit: contain; border-radius: 50%;" class="border shadow-sm" onerror="this.src='/images/rnb-logo.jpg'" />
+            <a class="navbar-brand d-flex align-items-center gap-2.5" href="#">
+                <img src="/uploads/schools/rnb-logo.jpg" alt="R N B Public School Emblem" style="height: 46px; width: 46px; object-fit: contain; border-radius: 50%;" class="border shadow-sm" onerror="this.src='/images/rnb-logo.jpg'" />
                 <div>
-                    <span class="fw-bold text-dark fs-5">@Model.School.Name</span>
-                    <small class="d-block text-muted" style="font-size: 0.75rem;">Affiliated & Registered: @(Model.School.RegistrationNumber ?? "REG-BH-BHOJPUR-802207")</small>
+                    <span class="fw-bolder text-dark fs-5 d-block line-height-1">@Model.School.Name</span>
+                    <small class="text-muted" style="font-size: 0.72rem;">
+                        <span class="fw-semibold text-primary">Piro (Bhojpur)</span> • Reg: @(Model.School.RegistrationNumber ?? "REG-BH-BHOJPUR-802207")
+                    </small>
                 </div>
             </a>
-            <div class="d-flex align-items-center gap-2">
-                <span class="text-muted small d-none d-md-inline fw-semibold">
-                    <i class="bi bi-telephone-fill text-primary me-1"></i> Helpline: 094708 35418
-                </span>
-                <a href="/School/Register/@Model.School.Code" class="btn btn-success btn-sm px-3 fw-bold shadow-sm">
-                    <i class="bi bi-pencil-square me-1"></i> Online Admission
-                </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#about">About School</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#wings">Academics</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#facilities">Campus & Labs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#gallery">Photo Gallery</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#principal">Principal's Desk</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-2">
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-sm px-3 fw-semibold rounded-pill">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Staff ERP
+                    </a>
+                    <a href="/School/Register/@Model.School.Code" class="btn btn-warning btn-sm px-3.5 py-1.5 fw-bold rounded-pill shadow-sm text-dark">
+                        <i class="bi bi-pencil-square me-1"></i> Admissions 2026-27
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section with Official School Photo & Emblem -->
-    <section class="hero-banner text-center">
-        <div class="container">
-            <div class="school-hero-img-box">
-                <img src="/uploads/schools/rnb-logo.jpg" alt="R N B Public School Emblem" onerror="this.src='/images/rnb-logo.jpg'" />
+    <!-- HERO BANNER SECTION -->
+    <header class="hero-section text-center">
+        <div class="hero-pattern"></div>
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+
+        <div class="container position-relative">
+            <!-- Center Emblem with Golden Glow -->
+            <div class="mb-3">
+                <div class="school-emblem-badge">
+                    <img src="/uploads/schools/rnb-logo.jpg" alt="R N B Public School Emblem" onerror="this.src='/images/rnb-logo.jpg'" />
+                </div>
             </div>
-            <span class="badge bg-warning text-dark px-3 py-2 text-uppercase mb-3 fw-bold">Admissions Open 2026-27</span>
-            <h1 class="display-4 fw-extrabold mb-2">Welcome to @Model.School.Name</h1>
-            <h4 class="mb-3" style="font-family: 'Tiro Devanagari Hindi', sans-serif; color: #fde047;">आर एन बी पब्लिक स्कूल, पिरो</h4>
-            <p class="lead max-w-2xl mx-auto opacity-90 mb-4" style="max-width: 750px;">
-                @(Model.School.About ?? "Best School In Bhojpur • Excellence in Education • Holistic Development")
+
+            <!-- Admission Pill -->
+            <div class="mb-2">
+                <span class="badge bg-warning text-dark px-3 py-1.5 rounded-pill fw-bold shadow-sm" style="font-size: 0.8rem; letter-spacing: 0.04em;">
+                    <i class="bi bi-stars me-1"></i> ADMISSIONS OPEN FOR SESSION 2026 – 2027
+                </span>
+            </div>
+
+            <!-- Titles -->
+            <h1 class="display-4 fw-extrabold mb-1 text-white">
+                @Model.School.Name
+            </h1>
+            <h3 class="fw-normal mb-3" style="font-family: 'Tiro Devanagari Hindi', sans-serif; color: #fde047; font-size: 1.6rem;">
+                आर एन बी पब्लिक स्कूल, पिरो (भोजपुर)
+            </h3>
+
+            <p class="lead text-light opacity-90 mx-auto mb-4" style="max-width: 780px; font-size: 1.08rem; line-height: 1.7;">
+                @(Model.School.About ?? "Leading co-educational English-medium institution committed to academic excellence, digital smart classrooms, STEM science labs, athletic training, and high moral character in Bhojpur, Bihar.")
             </p>
-            <div class="d-flex justify-content-center flex-wrap gap-3">
-                <a href="/School/Register/@Model.School.Code" class="btn btn-warning px-4 py-2 fw-bold shadow">
-                    <i class="bi bi-pencil-square me-1"></i> Online Admission Registration
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-center flex-wrap gap-2.5 mb-2">
+                <a href="/School/Register/@Model.School.Code" class="btn btn-warning btn-lg px-4 py-2.5 fw-bold text-dark shadow rounded-pill" style="font-size: 0.95rem;">
+                    <i class="bi bi-pencil-fill me-1.5"></i> Apply Online for Admission
                 </a>
-                <a href="#about" class="btn btn-outline-light px-4 py-2 fw-semibold">Explore Campus</a>
-                <a href="#contact" class="btn btn-primary px-4 py-2 fw-semibold shadow">Contact Administration</a>
+                <a href="#gallery" class="btn btn-outline-light btn-lg px-4 py-2.5 fw-semibold rounded-pill" style="font-size: 0.95rem;">
+                    <i class="bi bi-images me-1.5"></i> Explore Campus Life
+                </a>
+                <a href="tel:+919470835418" class="btn btn-primary btn-lg px-4 py-2.5 fw-semibold rounded-pill shadow" style="font-size: 0.95rem; background: #2563eb;">
+                    <i class="bi bi-telephone-fill me-1.5"></i> Helpline: 094708 35418
+                </a>
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- KPI Strength Row -->
-    <div class="container mb-5">
-        <div class="stat-badge-card">
-            <div class="row g-4 text-center">
-                <div class="col-6 col-md-3">
-                    <div class="display-6 fw-bold text-primary">@Model.TotalStudents+</div>
-                    <div class="text-muted small fw-semibold text-uppercase">Active Students</div>
+    <!-- FLOATING STATS KPI BAR -->
+    <div class="container stats-floating-container">
+        <div class="stats-card">
+            <div class="row g-2 text-center">
+                <div class="col-6 col-md-3 stat-item">
+                    <div class="display-6 fw-extrabold text-primary mb-0">@(Model.TotalStudents > 0 ? Model.TotalStudents : 500)+</div>
+                    <div class="text-muted fw-bold small text-uppercase" style="font-size: 0.72rem;">Enrolled Scholars</div>
                 </div>
-                <div class="col-6 col-md-3">
-                    <div class="display-6 fw-bold text-success">@Model.TotalTeachers+</div>
-                    <div class="text-muted small fw-semibold text-uppercase">Expert Faculty</div>
+                <div class="col-6 col-md-3 stat-item">
+                    <div class="display-6 fw-extrabold text-success mb-0">@(Model.TotalTeachers > 0 ? Model.TotalTeachers : 25)+</div>
+                    <div class="text-muted fw-bold small text-uppercase" style="font-size: 0.72rem;">Expert Educators</div>
                 </div>
-                <div class="col-6 col-md-3">
-                    <div class="display-6 fw-bold text-info">@Model.TotalClasses</div>
-                    <div class="text-muted small fw-semibold text-uppercase">Academic Grades</div>
+                <div class="col-6 col-md-3 stat-item">
+                    <div class="display-6 fw-extrabold text-info mb-0">Nursery - 10th</div>
+                    <div class="text-muted fw-bold small text-uppercase" style="font-size: 0.72rem;">Academic Wings</div>
                 </div>
-                <div class="col-6 col-md-3">
-                    <div class="display-6 fw-bold text-warning">100%</div>
-                    <div class="text-muted small fw-semibold text-uppercase">Excellence Track</div>
+                <div class="col-6 col-md-3 stat-item">
+                    <div class="display-6 fw-extrabold text-warning mb-0">100%</div>
+                    <div class="text-muted fw-bold small text-uppercase" style="font-size: 0.72rem;">CBSE Aligned Quality</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- About & Showcase Section -->
-    <section class="py-5" id="about">
+    <!-- MAIN BODY SECTIONS -->
+    <main class="py-5">
         <div class="container">
-            <!-- Large Showcase Photo Card -->
-            <div class="card border-0 shadow-sm p-4 p-md-5 bg-white mb-5">
+
+            <!-- ABOUT & CAMPUS OVERVIEW -->
+            <section class="mb-5 pt-3" id="about">
                 <div class="row g-4 align-items-center">
-                    <div class="col-md-5 text-center">
-                        <div class="p-3 bg-light rounded-4 border shadow-sm">
-                            <img src="/uploads/schools/rnb-logo.jpg" alt="R N B Public School Campus" style="width: 100%; max-height: 280px; object-fit: contain; border-radius: 12px;" onerror="this.src='/images/rnb-logo.jpg'" />
-                        </div>
-                    </div>
-                    <div class="col-md-7">
-                        <span class="badge bg-primary-subtle text-primary px-3 py-1 mb-2">About Our Institution</span>
-                        <h2 class="fw-bold mb-3">Excellence In Learning & Holistic Child Development</h2>
-                        <p class="text-muted" style="line-height: 1.8;">
-                            R N B Public School, Piro (आर एन बी पब्लिक स्कूल पिरो) is recognized as one of the finest educational institutions in Bhojpur district. We provide comprehensive English-medium schooling from Nursery to Class 10, combining state-of-the-art interactive smart classrooms, well-equipped science and computer laboratories, dedicated sports coaching, and strong moral values.
-                        </p>
-                        <div class="row g-3 mt-2">
-                            <div class="col-sm-6">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
-                                    <span class="fw-semibold small">Smart Digital Classrooms</span>
-                                </div>
+                    <div class="col-lg-5">
+                        <div class="position-relative">
+                            <div class="rounded-4 overflow-hidden shadow-lg border">
+                                <img src="/uploads/gallery/instagram-post-2.jpg" alt="RNB Campus Activities" class="w-100" style="height: 380px; object-fit: cover;" onerror="this.src='/images/gallery-campus.png'" />
                             </div>
-                            <div class="col-sm-6">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
-                                    <span class="fw-semibold small">Experienced Faculty</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
-                                    <span class="fw-semibold small">Sports & Cultural Activities</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
-                                    <span class="fw-semibold small">Computer & Science Labs</span>
-                                </div>
+                            <div class="position-absolute bottom-0 start-0 m-3 p-3 bg-white bg-opacity-95 rounded-3 shadow-sm border" style="max-width: 260px;">
+                                <div class="fw-bold text-dark small"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Station Road, Piro</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Lush Green Campus & Modern Academic Blocks</div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="row g-4 mb-5">
-                <div class="col-md-6">
-                    <div class="card border-0 shadow-sm p-4 h-100 bg-white border-start border-4 border-primary">
-                        <div class="feature-icon-circle bg-primary bg-opacity-10 text-primary">
-                            <i class="bi bi-eye-fill"></i>
-                        </div>
-                        <h4 class="fw-bold mb-2">Our Vision</h4>
-                        <p class="text-muted mb-0">
-                            @(Model.School.Vision ?? "To inspire every student with lifelong learning, ethical integrity, and global leadership skills in Piro and Bhojpur.")
+                    <div class="col-lg-7 ps-lg-4">
+                        <span class="section-tag bg-primary-subtle text-primary">About Our Institution</span>
+                        <h2 class="display-6 fw-bold text-dark mb-3">
+                            Nurturing Future Leaders With Knowledge & Character
+                        </h2>
+                        <p class="text-muted mb-3" style="line-height: 1.8; font-size: 0.95rem;">
+                            <strong>R N B Public School, Piro (आर एन बी पब्लिक स्कूल, पिरो)</strong> is one of the most trusted and prestigious co-educational institutions in Bhojpur, Bihar. With modern digital pedagogical methods, passionate educators, and vibrant extracurricular opportunities, we empower young minds from early childhood to high school graduation.
                         </p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card border-0 shadow-sm p-4 h-100 bg-white border-start border-4 border-success">
-                        <div class="feature-icon-circle bg-success bg-opacity-10 text-success">
-                            <i class="bi bi-compass-fill"></i>
-                        </div>
-                        <h4 class="fw-bold mb-2">Our Mission</h4>
-                        <p class="text-muted mb-0">
-                            @(Model.School.Mission ?? "Empowering diverse minds through state-of-the-art educational practices, moral values, and holistic development.")
-                        </p>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Principal Message -->
-            @if (Model.Principal != null)
-            {
-                <div class="card border-0 shadow-sm p-4 p-md-5 bg-white mb-5">
-                    <div class="row g-4 align-items-center">
-                        <div class="col-md-4 text-center">
-                            <div class="avatar-img avatar-xl mx-auto mb-3 border bg-light d-flex align-items-center justify-content-center overflow-hidden" style="width: 140px; height: 140px;">
-                                @if (!string.IsNullOrEmpty(Model.Principal.Photo))
-                                {
-                                    <img src="@Model.Principal.Photo" alt="Principal" style="width: 100%; height: 100%; object-fit: cover;" />
-                                }
-                                else
-                                {
-                                    <i class="bi bi-person-badge fs-1 text-primary"></i>
-                                }
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center gap-2.5 p-2.5 bg-white rounded-3 border shadow-xs">
+                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                    <span class="fw-semibold text-dark small">Smart Interactive Boards</span>
+                                </div>
                             </div>
-                            <h5 class="fw-bold mb-1">@Model.Principal.Name</h5>
-                            <div class="text-primary small fw-semibold">Principal / Head of Institute</div>
-                            <small class="text-muted">@Model.Principal.Qualification</small>
-                        </div>
-                        <div class="col-md-8">
-                            <h3 class="fw-bold mb-3">From the Desk of the Principal</h3>
-                            <blockquote class="blockquote text-muted fs-6 mb-3" style="line-height: 1.8;">
-                                <i class="bi bi-quote fs-3 text-primary"></i>
-                                @(Model.Principal.Message ?? "Welcome to R N B Public School, Piro! We are committed to providing top-quality education with disciplined learning, modern smart classrooms, and holistic child development in Bhojpur.")
-                            </blockquote>
-                            <div class="small text-muted">
-                                <strong>Experience:</strong> @(Model.Principal.Experience ?? "Over 20 years in educational leadership")
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center gap-2.5 p-2.5 bg-white rounded-3 border shadow-xs">
+                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                    <span class="fw-semibold text-dark small">High-Tech Science & Robotics Lab</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center gap-2.5 p-2.5 bg-white rounded-3 border shadow-xs">
+                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                    <span class="fw-semibold text-dark small">Computer Lab & Digital Skills</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center gap-2.5 p-2.5 bg-white rounded-3 border shadow-xs">
+                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                    <span class="fw-semibold text-dark small">Sports Arena, Yoga & Martial Arts</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            }
 
-            <!-- Campus Gallery -->
-            <div class="mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h3 class="fw-bold mb-1">Campus Life & Gallery</h3>
-                        <p class="text-muted small mb-0">Experience world-class infrastructure and dynamic learning spaces</p>
+                        <div class="d-flex gap-2">
+                            <a href="/School/Register/@Model.School.Code" class="btn btn-primary px-4 py-2 fw-semibold rounded-pill shadow-sm">
+                                <i class="bi bi-pencil-square me-1"></i> Register for Admission
+                            </a>
+                            <a href="#facilities" class="btn btn-light border px-4 py-2 fw-semibold rounded-pill text-muted">
+                                View Facilities
+                            </a>
+                        </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- ACADEMIC WINGS -->
+            <section class="mb-5 pt-3" id="wings">
+                <div class="text-center mb-4">
+                    <span class="section-tag bg-success-subtle text-success">Academic Journey</span>
+                    <h2 class="fw-bold text-dark">Tailored Learning for Every Age</h2>
+                    <p class="text-muted small">Comprehensive curriculum designed to foster critical thinking and creativity</p>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="wing-card wing-1 shadow-sm">
+                            <div class="d-inline-block p-3 rounded-3 bg-primary-subtle text-primary mb-3">
+                                <i class="bi bi-balloon-heart-fill fs-3"></i>
+                            </div>
+                            <h4 class="fw-bold text-dark mb-1">Pre-Primary Wing</h4>
+                            <div class="text-primary small fw-semibold mb-2.5">Nursery, LKG, UKG</div>
+                            <p class="text-muted small mb-3" style="line-height: 1.7;">
+                                Activity-based experiential learning, phonics, motor skill development, creative art, storytelling, and joyful social interaction in a warm environment.
+                            </p>
+                            <ul class="list-unstyled small text-muted mb-0">
+                                <li class="mb-1"><i class="bi bi-check2 text-primary me-1"></i> Montessori Toy & Activity Corner</li>
+                                <li class="mb-1"><i class="bi bi-check2 text-primary me-1"></i> Phonics & Number Concepts</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="wing-card wing-2 shadow-sm">
+                            <div class="d-inline-block p-3 rounded-3 bg-success-subtle text-success mb-3">
+                                <i class="bi bi-book-half fs-3"></i>
+                            </div>
+                            <h4 class="fw-bold text-dark mb-1">Primary & Middle Wing</h4>
+                            <div class="text-success small fw-semibold mb-2.5">Classes 1st to 8th</div>
+                            <p class="text-muted small mb-3" style="line-height: 1.7;">
+                                Strong foundations in Mathematics, Science, English, Hindi, and Social Sciences enriched by smart classroom audio-visual modules and computer lab practice.
+                            </p>
+                            <ul class="list-unstyled small text-muted mb-0">
+                                <li class="mb-1"><i class="bi bi-check2 text-success me-1"></i> Interactive Smart Classrooms</li>
+                                <li class="mb-1"><i class="bi bi-check2 text-success me-1"></i> Hindi, English & Sanskrit Fluency</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="wing-card wing-3 shadow-sm">
+                            <div class="d-inline-block p-3 rounded-3 bg-warning-subtle text-warning mb-3">
+                                <i class="bi bi-mortarboard-fill fs-3"></i>
+                            </div>
+                            <h4 class="fw-bold text-dark mb-1">Secondary Wing</h4>
+                            <div class="text-warning small fw-semibold mb-2.5">Classes 9th & 10th</div>
+                            <p class="text-muted small mb-3" style="line-height: 1.7;">
+                                Rigorous academic preparation, Olympiad coaching, Science laboratory experiments, mock examinations, and dedicated career guidance for board examination triumphs.
+                            </p>
+                            <ul class="list-unstyled small text-muted mb-0">
+                                <li class="mb-1"><i class="bi bi-check2 text-warning me-1"></i> Practical STEM & Science Experiments</li>
+                                <li class="mb-1"><i class="bi bi-check2 text-warning me-1"></i> Board Exam Strategy & Mock Tests</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WORLD-CLASS CAMPUS FACILITIES -->
+            <section class="mb-5 pt-3" id="facilities">
+                <div class="text-center mb-4">
+                    <span class="section-tag bg-info-subtle text-info">Infrastructure</span>
+                    <h2 class="fw-bold text-dark">World-Class Campus Facilities</h2>
+                    <p class="text-muted small">Modern infrastructure designed for holistic development and safety</p>
+                </div>
+
                 <div class="row g-3">
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="gallery-card card border-0 shadow-sm overflow-hidden h-100">
-                            <img src="/uploads/schools/rnb-logo.jpg" alt="Official School Emblem" class="w-100" style="height: 190px; object-fit: contain; background: #f8fafc; padding: 12px;" onerror="this.src='/images/rnb-logo.jpg'" />
-                            <div class="card-body p-2 bg-white">
-                                <div class="fw-semibold small text-truncate">Official School Emblem</div>
-                                <span class="badge bg-light text-secondary border" style="font-size: 0.65rem;">Campus Emblem</span>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="facility-card">
+                            <div class="facility-icon-wrap bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-display-fill"></i>
+                            </div>
+                            <h5 class="fw-bold mb-1.5 text-dark">Smart Classrooms</h5>
+                            <p class="text-muted small mb-0">Digital interactive touchscreens, animated conceptual lessons, and air-cooled spacious rooms.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="facility-card">
+                            <div class="facility-icon-wrap bg-success bg-opacity-10 text-success">
+                                <i class="bi bi-flask-fill"></i>
+                            </div>
+                            <h5 class="fw-bold mb-1.5 text-dark">Science & STEM Labs</h5>
+                            <p class="text-muted small mb-0">Fully equipped Physics, Chemistry, and Biology apparatus for hands-on experimentation.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="facility-card">
+                            <div class="facility-icon-wrap bg-info bg-opacity-10 text-info">
+                                <i class="bi bi-cpu-fill"></i>
+                            </div>
+                            <h5 class="fw-bold mb-1.5 text-dark">Computer & Coding Lab</h5>
+                            <p class="text-muted small mb-0">High-speed networked computer terminals with programming, typing, and digital literacy training.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="facility-card">
+                            <div class="facility-icon-wrap bg-warning bg-opacity-10 text-warning">
+                                <i class="bi bi-book-fill"></i>
+                            </div>
+                            <h5 class="fw-bold mb-1.5 text-dark">Digital Library</h5>
+                            <p class="text-muted small mb-0">Thousands of reference books, encyclopedias, children literature, and national daily periodicals.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="facility-card">
+                            <div class="facility-icon-wrap bg-danger bg-opacity-10 text-danger">
+                                <i class="bi bi-trophy-fill"></i>
+                            </div>
+                            <h5 class="fw-bold mb-1.5 text-dark">Sports & Athletics</h5>
+                            <p class="text-muted small mb-0">Cricket, Football, Badminton, Karate, Chess, and annual inter-school sports tournaments.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="facility-card">
+                            <div class="facility-icon-wrap bg-dark bg-opacity-10 text-dark">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <h5 class="fw-bold mb-1.5 text-dark">Safe & CCTV Campus</h5>
+                            <p class="text-muted small mb-0">24x7 CCTV security surveillance, purified RO drinking water, and safe transport facility across Piro.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INSTAGRAM CAMPUS LIFE & PHOTO GALLERY -->
+            <section class="mb-5 pt-3" id="gallery">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                    <div>
+                        <span class="section-tag bg-warning-subtle text-warning">Live Gallery</span>
+                        <h2 class="fw-bold text-dark mb-0">Campus Life, Sports & Celebrations</h2>
+                        <p class="text-muted small mb-0">Real moments and achievements captured from our vibrant school life</p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-1.5">
+                        <button class="gallery-filter-btn active" data-filter="all">All Photos</button>
+                        <button class="gallery-filter-btn" data-filter="Events">Events & Festivals</button>
+                        <button class="gallery-filter-btn" data-filter="Sports">Sports</button>
+                        <button class="gallery-filter-btn" data-filter="Classroom">Classrooms & Labs</button>
+                        <a href="https://www.instagram.com/rnbpublicschoolpiro/" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill fw-semibold px-3 ms-md-2">
+                            <i class="bi bi-instagram me-1"></i> Follow on Instagram
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row g-3" id="galleryGrid">
+                    <!-- Emblem Card -->
+                    <div class="col-sm-6 col-md-4 col-lg-3 gallery-item" data-category="Campus">
+                        <div class="gallery-item-card h-100">
+                            <div class="gallery-img-container d-flex align-items-center justify-content-center p-3 bg-light">
+                                <img src="/uploads/schools/rnb-logo.jpg" alt="Official School Emblem" style="object-fit: contain; max-height: 160px;" onerror="this.src='/images/rnb-logo.jpg'" />
+                            </div>
+                            <div class="p-2.5 bg-white">
+                                <div class="fw-bold small text-truncate text-dark">Official School Emblem</div>
+                                <div class="d-flex justify-content-between align-items-center mt-1">
+                                    <span class="badge bg-light text-secondary border" style="font-size: 0.62rem;">Emblem</span>
+                                    <small class="text-muted" style="font-size: 0.68rem;"><i class="bi bi-shield-check text-success"></i> Verified</small>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Instagram Photos -->
                     @foreach (var img in Model.GalleryImages.Where(i => i.ImagePath != "/uploads/schools/rnb-logo.jpg"))
                     {
-                        <div class="col-sm-6 col-md-4 col-lg-3">
-                            <div class="gallery-card card border-0 shadow-sm overflow-hidden h-100">
-                                <img src="@img.ImagePath" alt="@img.Title" class="w-100" style="height: 190px; object-fit: cover;" onerror="this.src='/images/gallery-campus.png'" loading="lazy" />
-                                <div class="card-body p-2 bg-white">
-                                    <div class="fw-semibold small text-truncate text-dark" title="@img.Title">@img.Title</div>
-                                    <span class="badge bg-light text-secondary border" style="font-size: 0.65rem;">@img.Category</span>
+                        var cat = img.Category ?? "Campus";
+                        <div class="col-sm-6 col-md-4 col-lg-3 gallery-item" data-category="@cat">
+                            <div class="gallery-item-card h-100">
+                                <div class="gallery-img-container">
+                                    <img src="@img.ImagePath" alt="@img.Title" onerror="this.src='/images/gallery-campus.png'" loading="lazy" />
+                                </div>
+                                <div class="p-2.5 bg-white">
+                                    <div class="fw-bold small text-truncate text-dark" title="@img.Title">@img.Title</div>
+                                    <div class="d-flex justify-content-between align-items-center mt-1">
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.62rem;">@cat</span>
+                                        <small class="text-muted" style="font-size: 0.68rem;"><i class="bi bi-camera text-muted"></i> Campus</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     }
                 </div>
-            </div>
+            </section>
 
-            <!-- Contact & Location -->
-            <div class="card border-0 shadow-sm p-4 bg-white" id="contact">
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <h4 class="fw-bold mb-3">Get in Touch</h4>
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <i class="bi bi-geo-alt-fill text-primary fs-4"></i>
-                            <div>
-                                <div class="fw-semibold">Campus Address</div>
-                                <div class="text-muted small">8CM3+PH4, Piro, Bhojpur, Bihar 802207</div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <i class="bi bi-telephone-fill text-primary fs-4"></i>
-                            <div>
-                                <div class="fw-semibold">Contact Numbers</div>
-                                <div class="text-muted small">
-                                    <a href="tel:+919470835418" class="text-decoration-none text-dark fw-bold">094708 35418</a> / 
-                                    <a href="tel:+919661160546" class="text-decoration-none text-dark fw-bold">09661160546</a>
+            <!-- PRINCIPAL'S DESK -->
+            <section class="mb-5 pt-3" id="principal">
+                <div class="principal-desk-card p-4 p-md-5">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-4 text-center border-end-lg">
+                            <div class="position-relative d-inline-block mb-3">
+                                <div class="rounded-circle overflow-hidden border shadow-sm mx-auto" style="width: 140px; height: 140px; background: #e2e8f0;">
+                                    <img src="@(Model.Principal?.Photo ?? "/images/avatars/principal.png")" alt="Principal" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/uploads/schools/rnb-logo.jpg'" />
                                 </div>
+                                <span class="badge bg-warning text-dark position-absolute bottom-0 start-50 translate-middle-x px-2 py-0.5 rounded-pill fw-bold shadow-xs" style="font-size: 0.65rem;">
+                                    Head of School
+                                </span>
                             </div>
+                            <h4 class="fw-bold text-dark mb-0.5">@(Model.Principal?.Name ?? "Dr. R. N. Bharti")</h4>
+                            <div class="text-primary small fw-semibold mb-1">Principal / Academic Director</div>
+                            <small class="text-muted d-block mb-2">@(Model.Principal?.Qualification ?? "M.Sc., M.Ed., Ph.D. in Educational Pedagogy")</small>
+                            <span class="badge bg-light text-secondary border px-2.5 py-1" style="font-size: 0.72rem;">
+                                <i class="bi bi-award-fill text-warning me-1"></i> 20+ Years Educational Leadership
+                            </span>
                         </div>
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <i class="bi bi-facebook text-primary fs-4"></i>
-                            <div>
-                                <div class="fw-semibold">Facebook Page</div>
-                                <div class="text-muted small">
-                                    <a href="https://www.facebook.com/RNBPublicSchool/" target="_blank" class="text-decoration-none text-primary">facebook.com/RNBPublicSchool</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="col-md-6">
-                        <div class="bg-light p-4 rounded-3 h-100 d-flex flex-column justify-content-center border">
-                            <h5 class="fw-bold mb-2">Are you a Student or Faculty Member?</h5>
-                            <p class="text-muted small mb-3">Access attendance, class dashboards, results, notices, and profile records.</p>
-                            <a asp-controller="Account" asp-action="Login" class="btn btn-primary fw-semibold px-4 py-2 align-self-start shadow-sm">
-                                <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to ERP Portal
-                            </a>
+                        <div class="col-lg-8 ps-lg-4">
+                            <span class="section-tag bg-primary-subtle text-primary">Leadership Vision</span>
+                            <h3 class="fw-bold text-dark mb-3">From the Desk of the Principal</h3>
+                            <blockquote class="text-muted mb-3" style="line-height: 1.85; font-size: 0.95rem; font-style: italic;">
+                                <i class="bi bi-quote fs-2 text-primary d-inline-block align-top me-1"></i>
+                                "@(Model.Principal?.Message ?? "Dear Parents and Students, Welcome to R N B Public School, Piro! Education is not merely the accumulation of facts, but the training of the mind to think, create, and lead with empathy. Our mission is to provide every child with high-standard English medium schooling, state-of-the-art digital infrastructure, and moral grounding right here in Piro, Bhojpur.")"
+                            </blockquote>
+                            <div class="d-flex align-items-center gap-3 pt-2">
+                                <a href="tel:+919470835418" class="btn btn-outline-primary btn-sm px-3 fw-semibold rounded-pill">
+                                    <i class="bi bi-telephone-fill me-1"></i> Speak With Principal Desk
+                                </a>
+                                <a href="/School/Register/@Model.School.Code" class="btn btn-primary btn-sm px-3.5 fw-semibold rounded-pill shadow-sm">
+                                    Apply for Admission
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- CONTACT & LOCATION GRID -->
+            <section class="pt-3" id="contact">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <span class="section-tag bg-success-subtle text-success">Reach Out</span>
+                            <h3 class="fw-bold text-dark mb-3">Get in Touch With Administration</h3>
+                            <p class="text-muted small mb-4">Have questions about admissions, transport routes, or fee schedules? Visit our campus or call our round-the-clock helpdesk.</p>
+
+                            <div class="d-flex align-items-start gap-3 mb-3.5">
+                                <div class="p-2.5 rounded-3 bg-primary-subtle text-primary mt-1">
+                                    <i class="bi bi-geo-alt-fill fs-5"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark small">School Campus Address</div>
+                                    <div class="text-muted small">Station Road, 8CM3+PH4, Piro, Bhojpur, Bihar 802207</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-start gap-3 mb-3.5">
+                                <div class="p-2.5 rounded-3 bg-success-subtle text-success mt-1">
+                                    <i class="bi bi-telephone-fill fs-5"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark small">Admission & Office Contact Numbers</div>
+                                    <div class="small">
+                                        <a href="tel:+919470835418" class="text-dark fw-bold text-decoration-none">+91 94708 35418</a> &nbsp;|&nbsp;
+                                        <a href="tel:+919661160546" class="text-dark fw-bold text-decoration-none">+91 96611 60546</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-start gap-3 mb-3.5">
+                                <div class="p-2.5 rounded-3 bg-danger-subtle text-danger mt-1">
+                                    <i class="bi bi-instagram fs-5"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark small">Official Social Handles</div>
+                                    <div class="small">
+                                        <a href="https://www.instagram.com/rnbpublicschoolpiro/" target="_blank" class="text-danger fw-semibold text-decoration-none me-2">
+                                            <i class="bi bi-instagram"></i> @@rnbpublicschoolpiro
+                                        </a>
+                                        <a href="https://www.facebook.com/RNBPublicSchool/" target="_blank" class="text-primary fw-semibold text-decoration-none">
+                                            <i class="bi bi-facebook"></i> facebook.com/RNBPublicSchool
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <!-- Quick Admission CTA Card -->
+                            <div class="p-4 rounded-4 bg-gradient text-white h-100 d-flex flex-column justify-content-between shadow-sm" style="background: linear-gradient(135deg, #1e3a8a, #0f172a);">
+                                <div>
+                                    <span class="badge bg-warning text-dark px-2.5 py-1 rounded-pill fw-bold mb-2">Admissions 2026-27</span>
+                                    <h4 class="fw-bold text-white mb-2">Enroll Your Child Today</h4>
+                                    <p class="text-white-50 small mb-3">
+                                        Limited seats available from Nursery to Class 10. Direct admission desk is open from 7:30 AM to 2:00 PM daily.
+                                    </p>
+                                    <div class="p-3 bg-white bg-opacity-10 rounded-3 border border-white border-opacity-15 mb-3">
+                                        <div class="d-flex align-items-center gap-2 text-white small fw-semibold mb-1">
+                                            <i class="bi bi-check2-circle text-warning"></i> Fast-track online admission form
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2 text-white small fw-semibold">
+                                            <i class="bi bi-check2-circle text-warning"></i> Instant confirmation & school SMS updates
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex flex-column flex-sm-row gap-2">
+                                    <a href="/School/Register/@Model.School.Code" class="btn btn-warning fw-bold px-4 py-2 text-dark shadow rounded-pill">
+                                        <i class="bi bi-pencil-square me-1"></i> Register Student Now
+                                    </a>
+                                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light fw-semibold px-3 py-2 rounded-pill">
+                                        <i class="bi bi-lock-fill me-1"></i> ERP Portal Login
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white pt-5 pb-4 mt-5 border-top border-secondary border-opacity-25">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-md-5">
+                    <div class="d-flex align-items-center gap-2.5 mb-3">
+                        <img src="/uploads/schools/rnb-logo.jpg" alt="Logo" style="height: 42px; width: 42px; border-radius: 50%;" onerror="this.src='/images/rnb-logo.jpg'" />
+                        <div>
+                            <div class="fw-bold fs-6">@Model.School.Name</div>
+                            <small class="text-white-50" style="font-size: 0.75rem;">Piro, Bhojpur, Bihar 802207</small>
+                        </div>
+                    </div>
+                    <p class="text-white-50 small mb-3" style="line-height: 1.7;">
+                        Committed to building character, inspiring curiosity, and delivering comprehensive CBSE aligned education from Nursery to Class 10.
+                    </p>
+                    <div class="d-flex gap-2">
+                        <a href="https://www.instagram.com/rnbpublicschoolpiro/" target="_blank" class="btn btn-outline-light btn-sm rounded-circle" style="width: 34px; height: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/RNBPublicSchool/" target="_blank" class="btn btn-outline-light btn-sm rounded-circle" style="width: 34px; height: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="tel:+919470835418" class="btn btn-outline-light btn-sm rounded-circle" style="width: 34px; height: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-telephone-fill"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <h6 class="fw-bold text-white mb-3">Quick Navigation</h6>
+                    <ul class="list-unstyled small text-white-50">
+                        <li class="mb-2"><a href="#about" class="text-white-50 text-decoration-none hover-white">About School</a></li>
+                        <li class="mb-2"><a href="#wings" class="text-white-50 text-decoration-none hover-white">Academic Wings</a></li>
+                        <li class="mb-2"><a href="#facilities" class="text-white-50 text-decoration-none hover-white">Campus Facilities</a></li>
+                        <li class="mb-2"><a href="#gallery" class="text-white-50 text-decoration-none hover-white">Photo Gallery</a></li>
+                        <li class="mb-2"><a href="/School/Register/@Model.School.Code" class="text-warning text-decoration-none fw-bold">Online Admission</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4 col-6">
+                    <h6 class="fw-bold text-white mb-3">Helpline & Office</h6>
+                    <ul class="list-unstyled small text-white-50">
+                        <li class="mb-2"><i class="bi bi-telephone-fill text-warning me-1.5"></i> 094708 35418 / 09661160546</li>
+                        <li class="mb-2"><i class="bi bi-geo-alt-fill text-danger me-1.5"></i> Station Road, Piro, Bhojpur (Bihar)</li>
+                        <li class="mb-2"><i class="bi bi-clock-fill text-info me-1.5"></i> 7:30 AM – 2:00 PM (Mon-Sat)</li>
+                        <li class="mb-2"><a asp-controller="Account" asp-action="Login" class="text-white text-decoration-none fw-semibold"><i class="bi bi-lock-fill text-warning me-1"></i> ERP Portal Sign In</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="border-secondary border-opacity-25 my-3" />
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-white-50 small">
+                <div>&copy; @DateTime.Today.Year @Model.School.Name, Piro. All rights reserved.</div>
+                <div class="mt-2 mt-md-0">CBSE Affiliated Academic System • Powered by EduManage ERP</div>
             </div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container text-center">
-            <p class="mb-1 fw-bold">@Model.School.Name</p>
-            <small class="text-white-50 d-block mb-3">8CM3+PH4, Piro, Bhojpur, Bihar 802207 • Phone: 094708 35418 / 09661160546</small>
-            <small class="text-white-50">&copy; @DateTime.Today.Year @Model.School.Name. All rights reserved.</small>
-        </div>
     </footer>
+
+    <!-- MOBILE FLOATING PARENT BAR -->
+    <div class="floating-mobile-bar d-md-none">
+        <div class="d-flex justify-content-between align-items-center gap-2">
+            <a href="tel:+919470835418" class="btn btn-outline-primary btn-sm flex-grow-1 fw-bold py-1.5">
+                <i class="bi bi-telephone-fill me-1"></i> Call Desk
+            </a>
+            <a href="https://wa.me/919470835418?text=Hello%20RNB%20Public%20School%2C%20I%20want%20admission%20inquiry" target="_blank" class="btn btn-success btn-sm flex-grow-1 fw-bold py-1.5">
+                <i class="bi bi-whatsapp me-1"></i> WhatsApp
+            </a>
+            <a href="/School/Register/@Model.School.Code" class="btn btn-warning btn-sm flex-grow-1 fw-bold py-1.5 text-dark">
+                <i class="bi bi-pencil-square me-1"></i> Apply Now
+            </a>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 Scripts & Gallery Filter Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Interactive Gallery Filter Buttons
+            const filterBtns = document.querySelectorAll('.gallery-filter-btn');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const filter = this.getAttribute('data-filter');
+
+                    galleryItems.forEach(item => {
+                        const itemCat = item.getAttribute('data-category') || '';
+                        if (filter === 'all' || itemCat.toLowerCase().includes(filter.toLowerCase())) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
