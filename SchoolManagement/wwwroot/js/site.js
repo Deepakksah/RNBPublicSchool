@@ -92,12 +92,27 @@ function showToast(message, type = 'success') {
     }, 4500);
 }
 
+// Helper to extract clean searchable text from a table row (ignoring unselected <option> elements in dropdowns)
+function getRowSearchableText(row) {
+    let text = '';
+    row.querySelectorAll('td').forEach(td => {
+        const select = td.querySelector('select');
+        if (select) {
+            const selectedOpt = select.options[select.selectedIndex];
+            text += ' ' + (selectedOpt ? selectedOpt.text : '');
+        } else {
+            text += ' ' + td.innerText;
+        }
+    });
+    return text.toLowerCase();
+}
+
 // ----------------------------------------------------
 // Global Live Auto-Search & Lazy Loading
 // ----------------------------------------------------
 function initGlobalAutoSearch() {
     // Find all search inputs across all pages
-    const searchInputs = document.querySelectorAll('input[name="search"], input[name="q"], input[name="searchTerm"], input[type="search"], input[placeholder*="Search"], input[placeholder*="search"]');
+    const searchInputs = document.querySelectorAll('input[name="search"], input[name="q"], input[name="searchTerm"], input[type="search"], input[id*="Search"], input[id*="search"], input[placeholder*="Search"], input[placeholder*="search"]');
 
     searchInputs.forEach(input => {
         let debounceTimer;
@@ -105,7 +120,6 @@ function initGlobalAutoSearch() {
         input.addEventListener('input', function (e) {
             clearTimeout(debounceTimer);
             const query = e.target.value.trim().toLowerCase();
-            const form = input.closest('form');
 
             debounceTimer = setTimeout(() => {
                 // Find table in the same card or page
@@ -114,12 +128,12 @@ function initGlobalAutoSearch() {
 
                 // If table has client-side rows, filter instantly
                 if (table && table.querySelectorAll('tbody tr').length > 0) {
-                    const rows = table.querySelectorAll('tbody tr:not(.no-filter)');
+                    const rows = table.querySelectorAll('tbody tr:not(.no-filter):not(.auto-search-empty-row)');
                     let matchCount = 0;
 
                     rows.forEach(row => {
-                        const text = row.innerText.toLowerCase();
-                        if (query === '' || text.includes(query)) {
+                        const rowSearchText = getRowSearchableText(row);
+                        if (query === '' || rowSearchText.includes(query)) {
                             row.style.display = '';
                             matchCount++;
                         } else {
@@ -144,6 +158,10 @@ function initGlobalAutoSearch() {
                         emptyRow.style.display = 'none';
                     }
                 }
+            }, 100);
+        });
+    });
+}
 
                 // If server-side form exists, perform smooth AJAX fetch in background
                 if (form && form.method.toLowerCase() === 'get') {

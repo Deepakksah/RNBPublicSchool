@@ -168,8 +168,13 @@
                 var matches = 0;
 
                 $rows.each(function () {
-                    var rowText = $(this).text().toLowerCase();
-                    if (query === '' || rowText.indexOf(query) !== -1) {
+                    // Extract text ONLY from visible displayed fields (Class Name + Assigned Teacher Name + Selected Option)
+                    var classText = $(this).find('td').eq(0).text().toLowerCase();
+                    var currentTeacherText = $(this).find('td').eq(2).text().toLowerCase();
+                    var selectedTeacherText = $(this).find('select[name="teacherId"] option:selected').text().toLowerCase();
+                    var searchableText = classText + " " + currentTeacherText + " " + selectedTeacherText;
+
+                    if (query === '' || searchableText.indexOf(query) !== -1) {
                         $(this).show();
                         matches++;
                     } else {
